@@ -1,17 +1,20 @@
-# pypadf
+# AnACor2.0
 ***
-Compute the pair-angle distribution function (PADF) from a fluctuation scattering dataset.
+AnACor2.0: A GPU-accelerated open-source software package for analytical absorption corrections in X-ray crystallography.
 
 
 ### Install
 
-Clone this repo:
+clone the repository locally and install with
 
-    git clone https://github.com/yishunlu-222/AnACor2.0.git
+```
+git clone https://github.com/yishunlu-222/AnACor2.0.git
+cd AnACor2.0; pip install -e .
+```
 
 ### Requirements
 
-The following packages are required by pypadf. All testing has used the following versions, but later versions should also work.
+The following packages are required by AnACor2.0. All testing has used the following versions, but later versions should also work.
 
 	python_version == 3.8
 	opencv-python>=4.6.0
@@ -19,17 +22,7 @@ The following packages are required by pypadf. All testing has used the followin
 	numba==0.59.0
 	imageio==2.33.1
 	scipy==1.10.1
-
-To install with conda (suggested), create and activate a conda environment and install the packages.
-
-    conda create --name pypadf python==3.9 -y
-    conda activate pypadf
-    conda install numpy==1.26.3 -y
-    conda install scipy==1.11.4 -y
-    conda install matplotlib==3.8.0 -y
-    conda install numba==0.59.0 -y
-    conda install h5py==3.9.0 -y
-    conda install imageio==2.33.1 -y
+	numpy==1.24.4
 
 ### Getting Started
 
