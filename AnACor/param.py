@@ -159,12 +159,7 @@ def set_parser():
         default=-1,
         help="Number of samples for crystal point calculation",
     )
-    # parser.add_argument(
-    #     "--auto-sampling",
-    #     type=str2bool,
-    #     default=True,
-    #     help="Flag to automatically determine sampling number (True/False)",
-    # )
+
     parser.add_argument(
         "--full-iteration",
         type=int,
@@ -226,16 +221,16 @@ def set_parser():
         help="Flag to enable test mode (True/False)",
     )
     parser.add_argument(
-        "--bisection",
-        type=str2bool,
-        default=False,
-        help="Flag to activate the bisection method (True/False)",
+    "--bisection",
+    type=str2bool,
+    default=False,
+    help="Flag to activate the bisection method (True/False)",
     )
     parser.add_argument(
         "--sampling-method",
         type=str,
         default='evenrandom',
-        help="Method for sampling (e.g., 'even', 'random','evenrandom')",
+        help="Method for sampling (e.g., 'even', 'random', 'evenrandom')",
     )
     parser.add_argument(
         "--sampling-ratio",
@@ -313,49 +308,55 @@ def set_parser():
         "--resolution-factor",
         type=float,
         default=None,
-        help="Flag to enable gridding with bisection (True/False)",
+        help="Factor to adjust resolution",
     )
     parser.add_argument(
         "--partial-illumination",
         type=str2bool,
         default=False,
-        help="whether to use partial illumination",
+        help="Flag to use partial illumination (True/False)",
     )
     parser.add_argument(
         "--centre-point-x",
         type=int,
         default=500,
-        help="centre point of the beam in x direction",
+        help="Centre point of the beam in the x direction",
     )
     parser.add_argument(
         "--centre-point-y",
         type=int,
         default=536,
-        help="centre point of the beam in y direction",
+        help="Centre point of the beam in the y direction",
     )
     parser.add_argument(
         "--centre-point-z",
         type=int,
         default=506,
-        help="centre point of the beam in z direction",
+        help="Centre point of the beam in the z direction",
     )
     parser.add_argument(
         "--beam-width",
         type=int,
         default=150,
-        help="beam width",
+        help="Beam width",
     )
     parser.add_argument(
         "--beam-height",
         type=int,
         default=240,
-        help="beam height",
+        help="Beam height",
+    )
+    parser.add_argument(
+        "--only-sampling",
+        type=str2bool,
+        default=False,
+        help="Flag to enable only sampling (True/False)",
     )
     parser.add_argument(
         "--load-sampling",
         type=str2bool,
         default=False,
-        help="beam height",
+        help="Flag to enable loading of sampling (True/False)",
     )
     args = parser.parse_args()
     return args

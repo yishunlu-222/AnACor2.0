@@ -61,4 +61,5 @@ Under the directory **XXX_save_data**, there are ResultData and Logging to store
 
 **<span style="font-size:1.5em;">Detailed documented manual is below for more options and parameters.</span>**:
 
+https://yishunlu-222.github.io/anacor.github.io/
 

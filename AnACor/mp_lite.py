@@ -262,7 +262,7 @@ def main ( ) :
     if hasattr(args, 'openmp'):
             pass
     else:
-        args.openmp=False
+        args.openmp=True
 
     if hasattr(args, 'absorption_map'):
             pass
