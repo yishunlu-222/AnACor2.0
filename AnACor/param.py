@@ -352,7 +352,7 @@ def set_parser():
         help="beam height",
     )
     parser.add_argument(
-        "--only-sampling",
+        "--load-sampling",
         type=str2bool,
         default=False,
         help="beam height",

@@ -31,7 +31,7 @@ Firstly, input files are needed to be created:
 anacor.init
 ```
 This will create *default_preprocess_input.yaml* and *default_mpprocess_input.yaml* for your to enter parameters.
-#### Preprocessing
+#### 1. Preprocessing
 
 - Inputs:
   - DIALS reflection and experiment files
@@ -47,9 +47,7 @@ Then, if you don't have the 3D models, in the same directory, you edit the defau
 ```
 anacor.preprocess 
 ```
-#### Scaling
-
-###### Calculating absorption factors
+#### 2. Scaling
 
 If you are running this software in Diamond Light Source, this is easy. You need to edit the default_mpprocess_input.yaml to change configuration of submission to the cluster, such as number of cores, running time and so on. Then run:
 ```
@@ -57,6 +55,10 @@ anacor.mp
 ```
 If you are running on your local machine, after running ```anacor.mp```, you will have error messages. Then you can go to the directory **XXX_save_data**, there is a bash file **mpprocess_script.sh**. You can edit this to run as a normal .bash file.
 
+#### 3. Results and logs
 
-Detail documented manual is below for more options and parameters.
+Under the directory **XXX_save_data**, there are ResultData and Logging to store results of logs.
+
+**<span style="font-size:1.5em;">Detailed documented manual is below for more options and parameters.</span>**:
+
 

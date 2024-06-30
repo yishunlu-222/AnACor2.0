@@ -257,12 +257,12 @@ def main ( ) :
     if hasattr(args, 'gpu'):
             pass
     else:
-        args.gpu=False
+        args.gpu=True
 
     if hasattr(args, 'openmp'):
             pass
     else:
-        args.openmp=True
+        args.openmp=False
 
     if hasattr(args, 'absorption_map'):
             pass
