@@ -1,7 +1,0 @@
-opencv-python>=4.6.0
-scikit-image>=0.19.3
-numba
-imagecodecs
-
-[:python_version == "3.8"]
-importlib-metadata

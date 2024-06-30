@@ -158,7 +158,7 @@ def main():
     if args.mp:   
         mp_data = {
             'store_dir': directory,
-            'dataset': 'test',
+            'dataset': 'anacor',
             'liac' : 0 ,
             'loac' : 0 ,
             'crac' : 0 ,
@@ -167,7 +167,7 @@ def main():
             'hour' : 6,
             'minute' : 10 ,
             'second' : 10 ,
-            'sampling_ratio' : 0.1 ,
+            'sampling_ratio' : 0.5 ,
             'dials_dependancy' : 'module load dials/latest' ,
             'hpc_dependancies' : 'module load global/cluster' ,
             'offset':0,
@@ -175,7 +175,7 @@ def main():
             'expt_path': expt_file,
             'model_storepath': '',
             'post_process': True,
-            'full_reflection' : 0 ,
+            'full_reflection' : 1 ,
             'with_scaling' : True ,
             'anomalous':False,
             'mtz2sca_dependancy' : 'module load ccp4' ,

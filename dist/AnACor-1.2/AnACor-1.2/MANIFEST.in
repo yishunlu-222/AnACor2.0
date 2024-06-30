@@ -1,2 +1,0 @@
-recursive-include ./AnACor/src  *.h *.c *.cu Makefile
-recursive-include ./AnACor/src/gpu *.cu *.h *.cuh

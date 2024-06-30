@@ -25,6 +25,38 @@ The following packages are required by AnACor2.0. All testing has used the follo
 	numpy==1.24.4
 	PyYAML==6.0.1l
 
-### Getting Started
+## How to run
+Firstly, input files are needed to be created:
+```
+anacor.init
+```
+This will create *default_preprocess_input.yaml* and *default_mpprocess_input.yaml* for your to enter parameters.
+#### Preprocessing
 
-For demonstration of the package, see instructions in the `demo` directory.
+- Inputs:
+  - DIALS reflection and experiment files
+  - Segmentation images directory 
+  - Raw flat-fielded corrected image directory
+  - DIALS dependancy (e.g. source /path/to/installation/directory/dials-dev/dials_env.sh) 
+- Outputs:
+  - human-readable json files of DIALS reflection and experiment files
+  - 3D segmentation model in .npy (numpy)
+  - absorption coefficient 
+  
+Then, if you don't have the 3D models, in the same directory, you edit the default_preprocess_input.yaml run (an example input file is in ./img):
+```
+anacor.preprocess 
+```
+#### Scaling
+
+###### Calculating absorption factors
+
+If you are running this software in Diamond Light Source, this is easy. You need to edit the default_mpprocess_input.yaml to change configuration of submission to the cluster, such as number of cores, running time and so on. Then run:
+```
+anacor.mp
+```
+If you are running on your local machine, after running ```anacor.mp```, you will have error messages. Then you can go to the directory **XXX_save_data**, there is a bash file **mpprocess_script.sh**. You can edit this to run as a normal .bash file.
+
+
+Detail documented manual is below for more options and parameters.
+

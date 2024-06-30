@@ -323,7 +323,7 @@ def main ( ) :
                  '--loac ${loac} --liac ${liac} --crac ${crac}  --buac ${buac} --offset ${offset} '
                  ' --store-dir ${store_dir} --refl-path ${refl_pth} --expt-path ${expt_pth}  '
                  '--model-storepath ${model_storepath} --full-iteration ${full_iter} --num-workers ${num}  '
-                 '--sampling-num ${sampling_num}  --openmp ${openmp} --single-c ${single_c} '
+                 ' --openmp ${openmp} --single-c ${single_c} '
                  ' --sampling-method ${sampling_method} --gpu ${gpu} --sampling-ratio ${sampling_ratio} '
                     ' --absorption-map ${absorption_map} --bisection ${bisection} --partial-illumination ${partial_illumination} '
                  ' > ${logging_dir}/running_details_${dataset}_${counter}.out\n' )
