@@ -62,5 +62,6 @@ setup(
         'scikit-image<=0.19.0',
         'numba',
         'imagecodecs',
+        'PyYAML',
     ],
 )

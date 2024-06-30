@@ -23,6 +23,7 @@ The following packages are required by AnACor2.0. All testing has used the follo
 	imageio==2.33.1
 	scipy==1.10.1
 	numpy==1.24.4
+	PyYAML==6.0.1l
 
 ### Getting Started
 
