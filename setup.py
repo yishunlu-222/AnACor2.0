@@ -2,6 +2,7 @@ from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
 import subprocess
 import os
+import re
 
 def get_gpu_model():
     try:
@@ -40,18 +41,16 @@ setup(
     cmdclass={
         'build_ext': CustomBuild,
     },
-    description='AnACor2.0 for analytical absorption correction by tomography reconstruction',
+    description='AnACor for analytical absorption correction by tomography reconstruction',
     author='Yishun Lu',
     author_email='yishun.lu@eng.ox.ac.uk, wes.armour@oerc.ox.ac.uk',
     entry_points={
         'console_scripts': [
             'anacor.preprocess = AnACor.preprocess_lite:main',
-
+            'anacor.main = AnACor.main_lite:main',
             #  'anacor.postprocess = AnACor.postprocess:main',
             'anacor.preprocess_lite = AnACor.preprocess_lite:main',
-            'anacor.main = AnACor.main_lite:main',
             'anacor.main_lite = AnACor.main_lite:main',
-            'anacor.mp = AnACor.mp_lite:main',
             'anacor.mp_lite = AnACor.mp_lite:main',
             #  'anacor.postprocess_lite = AnACor.postprocess_lite:main',
             'anacor.init = AnACor.initialization:main',
