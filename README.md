@@ -27,6 +27,8 @@ The following packages are required by AnACor2.0. All testing has used the follo
 	numpy==1.24.4
 	PyYAML==6.0.1l
 
+Before running AnACor2.0, please make sure DIALS is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
+ 
 ## How to run
 Firstly, input files are needed to be created:
 ```
