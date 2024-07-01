@@ -59,6 +59,18 @@ If you are running on your local machine, after running ```anacor.mp```, you wil
 
 Under the directory **XXX_save_data**, there are ResultData and Logging to store results of logs.
 
+## Test dataset
+
+Here is a test dataset of Thaumatin of PDBID 1RQW, whose diffraction experiment was done in I23, Diamond Light Source:
+
+https://drive.google.com/drive/folders/1wYZ3YONkAUyEGDyYYMkNoh5IY-6IghNx?usp=sharing
+
+It contains the Dials reflection and experiment files with it 3D segmented model, so you run Step 2 scaling directly after `anacor.init`. With assigning these absorption coefficients below, the I/sigma and R factors improve a lot compared to spherical harmonics correction used in Dials.
+
+| Sample    | Crystal | Liquor  | Loop    |
+|-----------|---------|---------|---------|
+| Thaumatin | 0.01926 | 0.02019 | 0.01864 |
+
 **<span style="font-size:1.5em;">Detailed documented manual is below for more options and parameters.</span>**:
 
 https://yishunlu-222.github.io/anacor.github.io/
