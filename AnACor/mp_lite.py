@@ -334,44 +334,44 @@ def main ( ) :
         if args.post_process is True:
             # with open( os.path.join( save_dir , "dialsprocess_script.sh" ) , "w" ) as f :
                 # f.write( "#!/bin/sh\n" )
-                dataset = args.dataset
-                save_dir = os.path.join( args.store_dir , '{}_save_data'.format( dataset ) )
-                result_path = os.path.join( save_dir , 'ResultData' , 'absorption_factors' )
-                dials_dir = os.path.join( save_dir , 'ResultData' , 'dials_output' )
-                dials_save_name = 'anacor_{}.refl'.format( dataset )
-                stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils','stacking.py' )
-                intoflexpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'into_flex.py' )
-                f.write( "{}\n".format( args.dials_dependancy ) )
-                f.write( "\n" )
-                f.write(
-                    "dials.python {} --save-dir {} --dataset {} \n".format( stackingpy_pth , result_path , args.dataset ) )
-                f.write( "\n" )
-                f.write( "dials.python {0} "
-                        "--save-number {1}  --refl-filename {2}  "
-                        "--full {3} --with-scaling {4} "
-                        "--dataset {5} "
-                        "--target-pth {6} --store-dir {7}  \n".format( intoflexpy_pth , args.dataset ,
-                                                                        args.refl_path , args.full_reflection ,
-                                                                        args.with_scaling , dataset , dials_dir ,
-                                                                        args.store_dir
-                                                                        ) )
-                f.write( "cd {} \n".format( dials_dir ) )
-                f.write( "\n" )
-                f.write( "dials.scale  {0} {1} "
-                        "anomalous={3}  physical.absorption_correction=False physical.analytical_correction=True "
-                        "output.reflections=result_{2}_ac.refl  output.html=result_{2}_ac.html "
-                        "output{{log={2}_ac_log.log}} output{{unmerged_mtz={2}_unmerged_ac.mtz}} output{{merged_mtz={2}_merged_ac.mtz}} "
-                        "\n".format( os.path.join( dials_dir , dials_save_name ) , args.expt_path , dataset,args.anomalous ) )
-                f.write( "\n" )
-                f.write( "dials.scale  {0} {1}  "
-                        "anomalous={3}  physical.absorption_level=high physical.analytical_correction=True "
-                        "output.reflections=result_{2}_acsh.refl  output.html=result_{2}_acsh.html "
-                        "output{{log={2}_acsh_log.log}}  output{{unmerged_mtz={2}_unmerged_acsh.mtz}} "
-                        "output{{merged_mtz={2}_merged_acsh.mtz}} "
-                        "\n".format( os.path.join( dials_dir , dials_save_name ) , args.expt_path , dataset,args.anomalous ) )
-                f.write( "{} \n".format( args.mtz2sca_dependancy ) )
-                f.write( "mtz2sca {}_merged_acsh.mtz   \n".format( dataset ) )
-                f.write( "mtz2sca {}_merged_ac.mtz   \n".format( dataset ) )
+            dataset = args.dataset
+            save_dir = os.path.join( args.store_dir , '{}_save_data'.format( dataset ) )
+            result_path = os.path.join( save_dir , 'ResultData' , 'absorption_factors' )
+            dials_dir = os.path.join( save_dir , 'ResultData' , 'dials_output' )
+            dials_save_name = 'anacor_{}.refl'.format( dataset )
+            stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils','stacking.py' )
+            intoflexpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'into_flex.py' )
+            f.write( "{}\n".format( args.dials_dependancy ) )
+            f.write( "\n" )
+            f.write(
+                "dials.python {} --save-dir {} --dataset {} \n".format( stackingpy_pth , result_path , args.dataset ) )
+            f.write( "\n" )
+            f.write( "dials.python {0} "
+                    "--save-number {1}  --refl-filename {2}  "
+                    "--full {3} --with-scaling {4} "
+                    "--dataset {5} "
+                    "--target-pth {6} --store-dir {7}  \n".format( intoflexpy_pth , args.dataset ,
+                                                                    args.refl_path , args.full_reflection ,
+                                                                    args.with_scaling , dataset , dials_dir ,
+                                                                    args.store_dir
+                                                                    ) )
+            f.write( "cd {} \n".format( dials_dir ) )
+            f.write( "\n" )
+            f.write( "dials.scale  {0} {1} "
+                    "anomalous={3}  physical.absorption_correction=False physical.analytical_correction=True "
+                    "output.reflections=result_{2}_ac.refl  output.html=result_{2}_ac.html "
+                    "output{{log={2}_ac_log.log}} output{{unmerged_mtz={2}_unmerged_ac.mtz}} output{{merged_mtz={2}_merged_ac.mtz}} "
+                    "\n".format( os.path.join( dials_dir , dials_save_name ) , args.expt_path , dataset,args.anomalous ) )
+            f.write( "\n" )
+            f.write( "dials.scale  {0} {1}  "
+                    "anomalous={3}  physical.absorption_level=high physical.analytical_correction=True "
+                    "output.reflections=result_{2}_acsh.refl  output.html=result_{2}_acsh.html "
+                    "output{{log={2}_acsh_log.log}}  output{{unmerged_mtz={2}_unmerged_acsh.mtz}} "
+                    "output{{merged_mtz={2}_merged_acsh.mtz}} "
+                    "\n".format( os.path.join( dials_dir , dials_save_name ) , args.expt_path , dataset,args.anomalous ) )
+            f.write( "{} \n".format( args.mtz2sca_dependancy ) )
+            f.write( "mtz2sca {}_merged_acsh.mtz   \n".format( dataset ) )
+            f.write( "mtz2sca {}_merged_ac.mtz   \n".format( dataset ) )
         f.close( )
         """new slurm cluster command"""
         
