@@ -108,11 +108,11 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
         "X-SLURM-USER-TOKEN": token,
         "Content-Type": "application/json",
     }
-    
+    # store_dir=args.store_dir
     job_script = os.path.join(save_dir, "mpprocess_script.sh")
     stdout_log = os.path.join(save_dir, "Logging/mp_lite_output.log")
     stderr_log = os.path.join(save_dir, "Logging/mp_lite_error.log")
-  
+    makefile=os.path.join(os.path.dirname( os.path.abspath( __file__ )),'src') 
     job_params = {
             "job": {
                 "name": f"AnACor_{dataset}",
@@ -131,8 +131,15 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
         "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
                 }
             },
-            "script": f"chmod 755 {job_script}\n "
-                        f" bash {job_script}" # f"#!/bin/bash\n echo 'testing'" 
+            "script": 
+                    f"""#!/bin/bash\n 
+                    #SBATCH --mem=50GB
+                    module load gcc
+                    module load cuda
+                    cd {makefile}
+                    make
+                    chmod 755 {job_script}\n  
+                    bash {job_script}""" # f"#!/bin/bash\n echo 'testing'" 
             
         }
 
@@ -344,6 +351,7 @@ def main ( ) :
             f.write( "expt_pth={}\n".format( args.expt_path ) )
         f.write( "store_dir={}\n".format(args.store_dir  ) )
         f.write( "logging_dir={}\n".format( os.path.join( save_dir , 'Logging' ) ) )
+        f.write("set -e \n")
         f.write( f'nohup {sys.executable} -u  ${{py_file}}  --dataset ${{dataset}} '
                  '--loac ${loac} --liac ${liac} --crac ${crac}  --buac ${buac} --offset ${offset} '
                  ' --store-dir ${store_dir} --refl-path ${refl_pth} --expt-path ${expt_pth}  '
@@ -397,9 +405,10 @@ def main ( ) :
             f.write( "{} \n".format( args.mtz2sca_dependancy ) )
             f.write( "mtz2sca {}_merged_acsh.mtz   \n".format( dataset ) )
             f.write( "mtz2sca {}_merged_ac.mtz   \n".format( dataset ) )
+        f.write("set +e \n")
         f.close( )
         """new slurm cluster command"""
-        
+    
         user, token = get_slurm_token()
         submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
         

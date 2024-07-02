@@ -29,7 +29,7 @@ class CustomBuild(build_ext):
         # Change to the directory containing the Makefile
         os.chdir('./AnACor/src')
         # Run the make command with the detected GPU model
-        subprocess.check_call(['make', 'cpu', f'ARCH={gpu_model}'])
+        subprocess.check_call(['make', f'ARCH={gpu_model}'])
         # Return to the original directory
         os.chdir('../../')
         super().run()
