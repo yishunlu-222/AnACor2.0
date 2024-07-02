@@ -175,9 +175,10 @@ def main():
             'expt_path': expt_file,
             'model_storepath': '',
             'post_process': True,
-            'full_reflection' : 1 ,
+            'full_iteration':1,
             'with_scaling' : True ,
-            'anomalous':False,
+            'anomalous':True,
+            'gpu':True,
             'mtz2sca_dependancy' : 'module load ccp4' ,
         }
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :

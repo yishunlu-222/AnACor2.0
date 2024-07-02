@@ -101,7 +101,7 @@ def set_parser ( ) :
 
     return args
 
-def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,user, token):
+def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,user, token,args):
     slurm_api_url = "https://slurm-rest.diamond.ac.uk:8443/slurm/v0.0.38/job/submit"
     headers = {
         "X-SLURM-USER-NAME": user,
@@ -112,27 +112,49 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
     job_script = os.path.join(save_dir, "mpprocess_script.sh")
     stdout_log = os.path.join(save_dir, "Logging/mp_lite_output.log")
     stderr_log = os.path.join(save_dir, "Logging/mp_lite_error.log")
-
-    job_params = {
-        "job": {
-            "name": f"AnACor_{dataset}",
-            "ntasks": 1,
-            "nodes": 1,
-            "cpus_per_task": num_cores,
-            "partition": "cs05r",  # Adjust this as needed
-            "current_working_directory": save_dir,
-            "standard_input": "/dev/null",
-            "standard_output": stdout_log,
-            "standard_error": stderr_log,
-            "environment": {
-            # "PATH": os.getenv("PATH"),
-                  "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/11.2/bin:/dls_sw/apps/mx/bin:/dls_sw/apps/xdsstat/2013-03-01:/dls_sw/apps/XDS/etc:/dls_sw/apps/XDS/20230630-extra:/dls_sw/apps/XDS/20230630:/dls_sw/apps/ccp4/8.0.019/arp_warp_8.0/bin/bin-x86_64-Linux:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/etc:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/bin:/dls_sw/apps/python/anaconda/4.6.14/64/envs/r-3.6/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/var/cfengine/bin:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu",
-      "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
-            }
-        },
-        "script": f"#!/bin/bash\n echo 'testing'" # \n bash {job_script}"
-        
-    }
+    if args.gpu:
+        job_params = {
+            "job": {
+                "name": f"AnACor_{dataset}",
+                "ntasks": 1,
+                "nodes": 1,
+                "cpus_per_task": num_cores,
+                "gpu":1,
+                "partition": "cs05r",  # Adjust this as needed
+                "current_working_directory": save_dir,
+                "standard_input": "/dev/null",
+                "standard_output": stdout_log,
+                "standard_error": stderr_log,
+                "environment": {
+                # "PATH": os.getenv("PATH"),
+                    "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/11.2/bin:/dls_sw/apps/mx/bin:/dls_sw/apps/xdsstat/2013-03-01:/dls_sw/apps/XDS/etc:/dls_sw/apps/XDS/20230630-extra:/dls_sw/apps/XDS/20230630:/dls_sw/apps/ccp4/8.0.019/arp_warp_8.0/bin/bin-x86_64-Linux:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/etc:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/bin:/dls_sw/apps/python/anaconda/4.6.14/64/envs/r-3.6/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/var/cfengine/bin:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu",
+        "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
+                }
+            },
+            "script": f"#!/bin/bash\n echo 'testing'" # \n bash {job_script}"
+            
+        }
+    else:
+                job_params = {
+            "job": {
+                "name": f"AnACor_{dataset}",
+                "ntasks": 1,
+                "nodes": 1,
+                "cpus_per_task": num_cores,
+                "partition": "cs05r",  # Adjust this as needed
+                "current_working_directory": save_dir,
+                "standard_input": "/dev/null",
+                "standard_output": stdout_log,
+                "standard_error": stderr_log,
+                "environment": {
+                # "PATH": os.getenv("PATH"),
+                    "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/11.2/bin:/dls_sw/apps/mx/bin:/dls_sw/apps/xdsstat/2013-03-01:/dls_sw/apps/XDS/etc:/dls_sw/apps/XDS/20230630-extra:/dls_sw/apps/XDS/20230630:/dls_sw/apps/ccp4/8.0.019/arp_warp_8.0/bin/bin-x86_64-Linux:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/etc:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/bin:/dls_sw/apps/python/anaconda/4.6.14/64/envs/r-3.6/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/var/cfengine/bin:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu",
+        "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
+                }
+            },
+            "script": f"#!/bin/bash\n echo 'testing'" # \n bash {job_script}"
+            
+        }
     
     response = requests.post(slurm_api_url, headers=headers, data=json.dumps(job_params))
     
@@ -194,36 +216,52 @@ def main ( ) :
                 if 'refl' in file and 'True' in file:
                     refl_path = os.path.join( save_dir , file )
             else:
-                if 'expt' in file and 'False' in file :
+                if 'expt' in file :
                     expt_path = os.path.join( save_dir , file )
-                if 'refl' in file and 'False' in file:
+                if 'refl' in file:
                     refl_path = os.path.join( save_dir , file )
+        else:
+            expt_path= args.expt_path 
+            refl_path= args.refl_path
     py_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'main_lite.py' )
     logger = setup_logger(os.path.join(save_dir,'Logging' ,'mpprocess.log'))
+    
     try :
         with open( expt_path ) as f2 :
             axes_data = json.load( f2 )
         print( f"experimental data is found at {expt_path}... \n" )
         logger.info( f"experimental data is found at {expt_path}... \n" )
-        with open( refl_path ) as f1 :
+        with open( refl_path,'r' ) as f1 :
             data = json.load( f1 )
         print( f"reflection table is found at {refl_path}... \n" )
         logger.info( f"reflection table is found at {refl_path}... \n" )
     except :
-        try :
-            with open( args.expt_path ) as f2 :
-                axes_data = json.load( f2 )
-            print( "experimental data is given and loaded... \n" )
-            logger.info( "experimental data is given and loaded... \n" )
-            with open( args.refl_path ) as f1 :
-                data = json.load( f1 )
-            print( "reflection table is given and loaded... \n" )
-            logger.info( "reflection table is given and loaded... \n" )
-        except :
-            logger.error( 'no reflections or experimental files detected'
+        logger.error( 'no reflections or experimental files in JSON format detected'
+                                    'please use --refl_path --expt-filename to specify' )
+        raise RuntimeError( 'no reflections or experimental files in JSON format detected'
+                                    'please use --refl_path --expt-filename to specify' )
+        if args.refl_path is None or args.expt_path is None:
+            logger.error( 'no reflections or experimental files inputed'
                                 'please use --refl_path --expt-filename to specify' )
-            raise RuntimeError( 'no reflections or experimental files detected'
-                                'please use --refl_path --expt-filename to specify' )
+        else:
+            try :
+                with open( args.expt_path ) as f2 :
+                    axes_data = json.load( f2 )
+                print( "experimental data is given and loaded... \n" )
+                logger.info( "experimental data is given and loaded... \n" )
+                with open( args.refl_path ) as f1 :
+                    data = json.load( f1 )
+                print( "reflection table is given and loaded... \n" )
+                logger.info( "reflection table is given and loaded... \n" )
+            except :
+                logger.error( 'no reflections or experimental files in JSON format detected'
+                                    'please use --refl_path --expt-filename to specify' )
+                logger.info("converting refl and expt files into JSON files")
+                from .preprocess_lite import preprocess_dial_lite
+                preprocess_dial_lite( args , save_dir,logger )
+                with open( args.refl_path ) as f1 :
+                    data = json.load( f1 )
+
 
 
 
@@ -376,7 +414,7 @@ def main ( ) :
         """new slurm cluster command"""
         
         user, token = get_slurm_token()
-        submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token)
+        submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
         
         """new slurm cluster command"""
 

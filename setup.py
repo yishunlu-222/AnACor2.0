@@ -25,7 +25,7 @@ class CustomBuild(build_ext):
         gpu_model = get_gpu_model()
         if not gpu_model:
             raise RuntimeError("Failed to detect GPU model")
-
+        print(f"GPU model {gpu_model} is found, compiling CUDA based on this Type")
         # Change to the directory containing the Makefile
         os.chdir('./AnACor/src')
         # Run the make command with the detected GPU model

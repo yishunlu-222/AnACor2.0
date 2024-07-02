@@ -3,18 +3,8 @@
 AnACor2.0: A GPU-accelerated open-source software package for analytical absorption corrections in X-ray crystallography.
 
 
-### Install
-You can either create a new environment 
-```
-conda create --name anacor python==3.8
-```
-or install in your currnet environment
-```
-git clone https://github.com/yishunlu-222/AnACor2.0.git
-cd AnACor2.0; pip install -e .
-```
-This Software is already installed in Beamline I23 Diamond Light Source. If you are using this at I23, go straight to [Scaling Step](#2-scaling)
-### Requirements
+
+## Requirements
 
 The following packages are required by AnACor2.0. All testing has used the following versions, but later versions should also work.
 
@@ -27,8 +17,21 @@ The following packages are required by AnACor2.0. All testing has used the follo
 	numpy==1.24.4
 	PyYAML==6.0.1l
 
-Before running AnACor2.0, please make sure DIALS is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
- 
+Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
+
+## Install
+You can either create a new environment 
+```
+conda create --name anacor python==3.8
+```
+or install in your currnet environment
+```
+pip install --upgrade pip
+git clone https://github.com/yishunlu-222/AnACor2.0.git
+cd AnACor2.0; pip install -e .
+```
+This Software is already installed in Beamline I23 Diamond Light Source. If you are working at I23, ```source /dls/science/groups/i23/yishun/dials_317/dials``` can activate AnACor2.0 .
+
 ## How to run
 Firstly, input files are needed to be created:
 ```
@@ -47,7 +50,7 @@ This will create *default_preprocess_input.yaml* and *default_mpprocess_input.ya
   - 3D segmentation model in .npy (numpy)
   - absorption coefficient 
   
-Then, if you don't have the 3D models, in the same directory, you edit the default_preprocess_input.yaml run (an example input file is in ./img):
+Then, if you don't have the 3D models, in the same directory, you edit the default_preprocess_input.yaml run (an example input file is in [./img](https://github.com/yishunlu-222/AnACor2.0/tree/main/img)):
 ```
 anacor.preprocess 
 ```
