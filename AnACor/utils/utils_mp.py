@@ -117,12 +117,12 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
         height=int(args.beam_height/1000/(args.pixel_size_x* 1e-3)/2)
         xray_region=[ centre_point_on_axis[1]-height,centre_point_on_axis[1]+height,centre_point_on_axis[0]-width,centre_point_on_axis[0]+width]   
     if args.gpu:
-        try:
-            anacor_lib_gpu = ct.CDLL(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), f'./src/ray_tracing_gpu_{args.gpu_card}.so'))
-        except:
-            anacor_lib_gpu = ct.CDLL(os.path.join(os.path.dirname(os.path.dirname(
-            os.path.abspath(__file__))), f'./src/ray_tracing_gpu.so'))
+        # try:
+        #     anacor_lib_gpu = ct.CDLL(os.path.join(os.path.dirname(
+        #     os.path.abspath(__file__)), f'./src/ray_tracing_gpu{args.gpu_card}.so'))
+        # except:
+        anacor_lib_gpu = ct.CDLL(os.path.join(os.path.dirname(os.path.dirname(
+        os.path.abspath(__file__))), f'./src/ray_tracing_gpu.so'))
         # anacor_lib_gpu = ct.CDLL(os.path.join(os.path.dirname(
         #     os.path.abspath(__file__)), f'./src/ray_tracing_gpu_{args.gpu_card}.so'))
         anacor_lib_gpu.ray_tracing_gpu_overall.restype = ct.POINTER(ct.c_float)
