@@ -56,7 +56,9 @@ anacor.preprocess
 ```
 #### 2. Scaling
 
-If you are running this software in **Diamond Light Source I23**, this is easy. You need to edit the default_mpprocess_input.yaml to change configuration of submission to the cluster, such as number of cores, running time and so on. Then run:
+The software configures the parameters from default_mpprocess_input.yaml and transfers them into a .bash file so the user can run locally or submit to the cluster.
+
+If you are running this software in **Diamond Light Source I23**, this is easy. You just need to edit the default_mpprocess_input.yaml to change configuration of submission to the cluster, such as number of cores, running time and so on. Then run:
 ```
 source /dls/science/groups/i23/yishun/dials_317/dials
 anacor.mp
@@ -79,7 +81,7 @@ Here is a test dataset of Thaumatin of PDBID 1RQW, whose diffraction experiment 
 
 https://drive.google.com/drive/folders/1wYZ3YONkAUyEGDyYYMkNoh5IY-6IghNx?usp=sharing
 
-It contains the Dials reflection and experiment files with it 3D segmented model, so you run Step 2. scaling directly after `anacor.init`. With assigning the data paths and these absorption coefficients below, the I/sigma and R factors improve a lot compared to spherical harmonics correction used in Dials.
+Due to the size of tomography images dataset, it only contains the Dials reflection and experiment files with its 3D segmented model, so Step 1 preprocessing is not needed and you can just run Step 2. scaling directly after `anacor.init`. With assigning the data paths and these absorption coefficients below, the I/sigma and R factors improve a lot compared to the spherical harmonics correction used in Dials.
 
 | Sample    | Crystal | Liquor  | Loop    |
 |-----------|---------|---------|---------|
