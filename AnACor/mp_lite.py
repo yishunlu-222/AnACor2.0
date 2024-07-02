@@ -136,10 +136,10 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                     #SBATCH --mem=50GB
                     module load gcc
                     module load cuda
-                    cd {makefile}
-                    make
+                   
+                    
                     chmod 755 {job_script}\n  
-                    bash {job_script}""" # f"#!/bin/bash\n echo 'testing'" 
+                    bash {job_script}""" # f"#!/bin/bash\n echo 'testing'"  cd {makefile}  make
             
         }
 
