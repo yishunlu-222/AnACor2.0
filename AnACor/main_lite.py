@@ -267,11 +267,6 @@ def main():
     else:
 
 
-        # Create a list of 48 data copies
-
-        # Create a queue to store the results from each worker process
-        # pdb.set_trace()
-        # Create a list of worker processes
         processes = []
         if args.gpu is True:
             num_processes = 1

@@ -1,8 +1,10 @@
 from setuptools import setup, find_packages, Extension
 from setuptools.command.build_ext import build_ext
+from setuptools.command.test import test as TestCommand
 import subprocess
 import os
 import re
+import sys
 
 def get_gpu_model():
     try:
@@ -19,7 +21,7 @@ def get_gpu_model():
     except Exception as e:
         print(f"Error detecting GPU model: {e}")
         return None
-
+ 
 class CustomBuild(build_ext):
     def run(self):
         gpu_model = get_gpu_model()
@@ -33,6 +35,23 @@ class CustomBuild(build_ext):
         # Return to the original directory
         os.chdir('../../')
         super().run()
+
+class PyTest(TestCommand):
+    user_options = [('pytest-args=', 'a', "Arguments to pass to pytest")]
+
+    def initialize_options(self):
+        TestCommand.initialize_options(self)
+        self.pytest_args = ''
+
+    def finalize_options(self):
+        TestCommand.finalize_options(self)
+        self.test_args = []
+        self.test_suite = True
+
+    def run_tests(self):
+        import pytest
+        errno = pytest.main(self.pytest_args.split())
+        sys.exit(errno)
 
 setup(
     name='AnACor',
@@ -70,5 +89,7 @@ setup(
         'tqdm',
         'requests',
         'scipy',
+        'pytest',
     ],
+    tests_require=['pytest'],
 )
