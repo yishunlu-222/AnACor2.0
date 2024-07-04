@@ -57,7 +57,7 @@ bisection.o: $(pth)bisection.c
 	$(GCC) -c $(pth)bisection.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -o bisection.o
 
 testkit.o: $(pth)testkit.c
-	$(GCC) -c $(pth)testkit.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS)-o testkit.o
+	$(GCC) -c $(pth)testkit.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -o testkit.o
 
 
 

@@ -6,6 +6,7 @@ import logging
 from table import Sphere, Cylinder
 import time
 import pdb
+import os
 # Configure logging
 
 logger = logging.getLogger(__name__)
@@ -38,6 +39,15 @@ class TestBasic:
             assert generate_sampling is not None
             assert self.sphere_simulation is not None
             assert self.cylinder_simulation is not None
+        compile_files=["ray_tracing_gpu.so","ray_tracing_cpu.so"]
+        compile_pth = ["AnACor/src"]
+        for file in compile_files:
+            for pth in compile_pth:
+                try:
+                    
+                    assert os.path.exists(os.path.join(pth,file))
+                except:
+                    logger.error(f"Cannot find {file} in {pth}")
         
         logger.info("========test_import is done========")
         logger.info("\n")
