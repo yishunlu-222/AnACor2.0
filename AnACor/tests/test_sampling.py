@@ -46,9 +46,9 @@ class TestBasic:
            
                 try:
                     
-                    assert os.path.exists(os.path.join(abs_pth,pth,file))
+                    assert os.path.exists(os.path.join(abs_pth,compile_pth,file))
                 except:
-                    logger.error(f"Cannot find {file} in {pth}")
+                    logger.error(f"Cannot find {file} in {compile_pth}")
         
         logger.info("========test_import is done========")
         logger.info("\n")

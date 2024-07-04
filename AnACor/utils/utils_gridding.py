@@ -528,21 +528,21 @@ def interpolation_gridding(
         )
     )
 
-    lib.interpolate.restype = ct.c_double
+    # lib.interpolate.restype = ct.c_double
     # Define the argument types and return type of the function
 
-    lib.interpolate.argtypes = [
-        ct.c_int64,
-        np.ctypeslib.ndpointer(dtype=np.float64),
-        np.ctypeslib.ndpointer(dtype=np.float64),
-        np.ctypeslib.ndpointer(dtype=np.float64),
-        ct.c_int,
-        ct.c_int,
-        ct.c_double,
-        ct.c_double,
-        ct.c_double,
-        ct.c_double,
-    ]
+    # lib.interpolate.argtypes = [
+    #     ct.c_int64,
+    #     np.ctypeslib.ndpointer(dtype=np.float64),
+    #     np.ctypeslib.ndpointer(dtype=np.float64),
+    #     np.ctypeslib.ndpointer(dtype=np.float64),
+    #     ct.c_int,
+    #     ct.c_int,
+    #     ct.c_double,
+    #     ct.c_double,
+    #     ct.c_double,
+    #     ct.c_double,
+    # ]
     lib.nearest_neighbor_interpolate.restype = ct.c_double
     lib.nearest_neighbor_interpolate.argtypes = [
         ct.c_int64,
@@ -591,15 +591,15 @@ def interpolation_gridding(
 
     # Define the argument types and return type of the function
 
-    lib.interpolate_single.argtypes = [
-        np.ctypeslib.ndpointer(dtype=np.float64),
-        np.ctypeslib.ndpointer(dtype=np.float64),
-        np.ctypeslib.ndpointer(dtype=np.float64),
-        ct.c_int,
-        ct.c_int,
-        ct.c_double,
-        ct.c_double,
-    ]
+    # lib.interpolate_single.argtypes = [
+    #     np.ctypeslib.ndpointer(dtype=np.float64),
+    #     np.ctypeslib.ndpointer(dtype=np.float64),
+    #     np.ctypeslib.ndpointer(dtype=np.float64),
+    #     ct.c_int,
+    #     ct.c_int,
+    #     ct.c_double,
+    #     ct.c_double,
+    # ]
 
     if args.openmp:
         for i, row in enumerate(selected_data):
