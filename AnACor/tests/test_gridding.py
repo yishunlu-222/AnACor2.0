@@ -66,7 +66,7 @@ class TestBasic:
             F=np.array([[1., 0., 0.],
                         [0., 1., 0.],
                         [0., 0., 1.]])
-            pdb.set_trace()
+            
             omega_axis=np.array([1,0,0]).astype(np.float64)
             axes_data=[{'axes': [[1.0, 0.0, 0.0], [0.6427876096865394, -0.766044443118978, 0.0], [1.0, 0.0, 0.0]], 'angles': [0.0, 0.0, -180.0], 'names': ['PHI', 'KAPPA', 'OMEGA'], 'scan_axis': 2}, {'direction': myframe_2_dials(thetaphi_2_myframe(180 / 180 * np.pi, 0)), 'wavelength': 3.0996, 'divergence': 0.0, 'sigma_divergence': 0.0, 'polarization_normal': [0.0, 1.0, 0.0], 'polarization_fraction': 0.999, 'flux': 47526395371.550964, 'transmission': 1.0}]
             

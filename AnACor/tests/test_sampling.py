@@ -41,12 +41,12 @@ class TestBasic:
             assert self.cylinder_simulation is not None
         compile_files=["ray_tracing_gpu.so","ray_tracing_cpu.so","gridding_interpolation.so"]
         abs_pth = os.path.abspath(os.path.join(os.path.dirname(__file__),"../"))
-        compile_pth = ["./src"]
+        compile_pth = "./src"
         for file in compile_files:
-            for pth in compile_pth:
+           
                 try:
                     
-                    assert os.path.exists(os.path.join(pth,file))
+                    assert os.path.exists(os.path.join(abs_pth,pth,file))
                 except:
                     logger.error(f"Cannot find {file} in {pth}")
         
