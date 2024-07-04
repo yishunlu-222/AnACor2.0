@@ -10,8 +10,7 @@ LIB := -L${CUDA_HOME}/lib64 -lcudart -lcufft -lcuda
 LDFLAGS=-fopenmp
 GCC = gcc
 NVCC = ${CUDA_HOME}/bin/nvcc
-GSL_INCLUDE ?= /usr/local/include
-GSL_LIB ?= /usr/local/lib
+
 
 
 
@@ -33,7 +32,8 @@ endif
 NVCCFLAGS = -O3 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -lineinfo
 NVCCFLAGS_D = -O0 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -G -g
 
-
+GSL_INCLUDE ?= /usr/local/include
+GSL_LIB ?= /usr/local/lib
 #NVCCFLAGS = -O3 -arch=sm_70 --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -lineinfo  #V100
 GCC_OPTS =-O3 -fPIC -Wall -Wextra  $(LDFLAGS)  $(INC)
 GCC_OPTS_D =-O0 -fPIC -Wall -Wextra $(INC)  $(LDFLAGS)  -g
@@ -112,10 +112,10 @@ ray_tracing_gpu_d.o:  $(gpu_pth)ray_tracing_gpu.cu
 
 
 sharedlibrary_interpolation: gridding_interpolation.c ray_tracing_basic.o
-	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS)  gridding_interpolation.c ray_tracing_basic.o
+	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_gridding) gridding_interpolation.c ray_tracing_basic.o
 
 sharedlibrary_interpolation_d: gridding_interpolation.c ray_tracing_basic.o
-	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_D) $(LDFLAGS) gridding_interpolation.c ray_tracing_basic.o
+	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_gridding)  gridding_interpolation.c ray_tracing_basic.o
 
 
 
