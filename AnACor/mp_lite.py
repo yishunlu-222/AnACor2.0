@@ -139,7 +139,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                     #module load cuda
                     export CUDA_HOME=/dls_sw/apps/cuda/12.4.0
                     export PATH=$CUDA_HOME/bin:$PATH
-                    
+                    export PATH=/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
                     cd {makefile}
                     make 
                     chmod 755 {job_script}\n  
