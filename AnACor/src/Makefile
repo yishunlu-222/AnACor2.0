@@ -23,7 +23,7 @@ else ifneq ($(findstring v100,$(ARCH)),)
   SM_ARCH = sm_70
 else ifneq ($(findstring titanx,$(ARCH)),)
   SM_ARCH = sm_61
-elsenv
+else
   # Default architecture
   SM_ARCH = sm_70
 endif
