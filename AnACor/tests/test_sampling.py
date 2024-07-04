@@ -39,7 +39,7 @@ class TestBasic:
             assert generate_sampling is not None
             assert self.sphere_simulation is not None
             assert self.cylinder_simulation is not None
-        compile_files=["ray_tracing_gpu.so","ray_tracing_cpu.so"]
+        compile_files=["ray_tracing_gpu.so","ray_tracing_cpu.so","gridding_interpolation.so"]
         compile_pth = ["AnACor/src"]
         for file in compile_files:
             for pth in compile_pth:

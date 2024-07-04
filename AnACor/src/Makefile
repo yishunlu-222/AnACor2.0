@@ -108,10 +108,10 @@ ray_tracing_gpu_d.o:  $(gpu_pth)ray_tracing_gpu.cu
 
 
 sharedlibrary_interpolation: gridding_interpolation.c ray_tracing_basic.o
-	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -lgsl -lgslcblas gridding_interpolation.c ray_tracing_basic.o
+	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -lgsl -lgslcblas -lm gridding_interpolation.c ray_tracing_basic.o
 
 sharedlibrary_interpolation_d: gridding_interpolation.c ray_tracing_basic.o
-	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_D) $(LDFLAGS) -lgsl -lgslcblas gridding_interpolation.c ray_tracing_basic.o
+	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_D) $(LDFLAGS) -lgsl -lgslcblas -lm gridding_interpolation.c ray_tracing_basic.o
 
 
 

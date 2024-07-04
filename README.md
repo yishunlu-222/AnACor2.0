@@ -42,7 +42,7 @@ This Software is already installed in Beamline I23 Diamond Light Source. If you 
 #### PyTest
 You can run pytest to check if all modules are working properly in your machine by:
 ```
-cd tests; pytest
+cd ./AnACor/tests; pytest
 ```
 A `pytest.log file` is generated, capturing the testing results and computational performance for all acceleration models used in simulating crystal models, specifically spherical and cylindrical shapes. The calculated absorption factors are compared with the results from the International Tables for Crystallography (Maslen, 2006), available at [International Tables for Crystallography](https://it.iucr.org/Cb/ch6o3v0001/sec6o3o1/).
 
