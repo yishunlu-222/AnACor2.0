@@ -25,7 +25,11 @@ Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed h
 
 You can either create a new environment 
 ```
-conda create --name anacor python==3.8
+conda create --name anacor python==3.8 # Recommended
+or
+python -m venv anacor
+# Not Recommended, in case conda doesn't work
+# then you need to source /path/anacor/bin/activate to activate
 ```
 or install in your currnet environment
 ```
@@ -115,3 +119,4 @@ https://yishunlu-222.github.io/anacor.github.io/
 ## Reference
 
 - Maslen, E. N. (2006). International Tables for Crystallography, volume C, chapter 6.3.3, Absorption corrections, pages600–608. 3rd edition.
+
