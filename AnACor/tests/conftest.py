@@ -15,16 +15,18 @@ def pytest_sessionfinish(session, exitstatus):
     for json_file in json_files:
         try:
             os.remove(json_file)
-            print(f"Removed {json_file}")
+            # print(f"Removed {json_file}")
         except OSError as e:
-            print(f"Error removing {json_file}: {e}")
+            pass
+            # print(f"Error removing {json_file}: {e}")
     npy_files = glob.glob(os.path.join(test_dir, '*.npy'))
     for npy_file in npy_files:
         try:
             os.remove(npy_file)
-            print(f"Removed {npy_file}")
+            # print(f"Removed {npy_file}")
         except OSError as e:
-            print(f"Error removing {npy_file}: {e}")
+            pass
+            # print(f"Error removing {npy_file}: {e}")
 # Configure logging
 logging.basicConfig(level=logging.INFO, 
                     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
