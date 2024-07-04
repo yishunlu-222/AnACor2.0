@@ -89,7 +89,7 @@ The software configures the parameters from default_mpprocess_input.yaml and tra
 
 If you are running this software in **Diamond Light Source I23**, this is easy. You just need to edit the default_mpprocess_input.yaml to change configuration of submission to the cluster, such as number of cores, running time and so on. Then run:
 ```
-source /dls/science/groups/i23/yishun/dials_317/dials
+source /dls/science/groups/i23/yishun/AnACor2.0/anacor2/bin/activate
 anacor.mp
 ```
 
@@ -97,7 +97,7 @@ If you are running on **others or your local machine**, after running ```anacor.
 ```
 cd XXX_save_data
 chmod +x mpprocess_script.sh
-srun --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=4G ./mpprocess_script.sh
+srun --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=4G --gres=gpu:1 ./mpprocess_script.sh
 ```
 
 #### 3. Results and logs

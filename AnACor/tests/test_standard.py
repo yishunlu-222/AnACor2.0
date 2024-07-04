@@ -55,7 +55,7 @@ class TestBasic:
             
             coefficients=np.array([0,0,mu,0])
             num_cls=3
-            printing=True  
+            printing=False  
             arugments.openmp=False
             arugments.single_c=True
             store_paths=0

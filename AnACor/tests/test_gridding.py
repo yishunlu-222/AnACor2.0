@@ -40,7 +40,7 @@ class TestBasic:
             logger.info(f"===For efficiency, only sampling ratio of {sampling_ratio}% in testing===")
             t1 = time.time()
             low = 0
-            dataset = 'pytest_Gridding'
+            dataset = 'pytest'
             arugments.dataset=dataset
             mu=0.01
             voxel_size = np.array([pixel_size,pixel_size,pixel_size])

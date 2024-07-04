@@ -42,7 +42,7 @@ except:
 
 
 
-def loading_absorption_map(gridding_dir,afterfix):
+def     loading_absorption_map(gridding_dir,afterfix):
     def sort_key(s):
         if s:
             try:
@@ -50,12 +50,12 @@ def loading_absorption_map(gridding_dir,afterfix):
             except:
                 c = -1
             return int(c)
-    # pdb.set_trace()
+    
     absorption_map_list =[name for name in os.listdir(gridding_dir) if afterfix in name]
     if len(absorption_map_list) == 0:
         return None
     absorption_map_list.sort(key=sort_key)
-    print(absorption_map_list)
+    # print(absorption_map_list)
     for i in range(len(absorption_map_list)):
         map = np.load(f'{gridding_dir}/{absorption_map_list[i]}')
         overall_map = map if i == 0 else np.concatenate((overall_map,map),axis=0)
