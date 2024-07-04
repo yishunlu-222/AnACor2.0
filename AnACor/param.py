@@ -29,7 +29,7 @@ def set_parser_init():
     parser.add_argument(
         "--pre",
         type=str2bool,
-        default=True,
+        default=True, 
         help="initialize the preprocessing configuation file",
     )  
     parser.add_argument(
@@ -78,7 +78,7 @@ def set_parser():
     parser.add_argument(
         "--model-storepath",
         type=str,
-        required=True,
+        default=None,
         help="Path to store the full model",
     )
     parser.add_argument(
@@ -132,25 +132,25 @@ def set_parser():
     parser.add_argument(
         "--liac",
         type=float,
-        required=True,
+        default=0,
         help="Absorption coefficient of liquor (um-1)",
     )
     parser.add_argument(
         "--loac",
         type=float,
-        required=True,
+        default=0,
         help="Absorption coefficient of loop (um-1)",
     )
     parser.add_argument(
         "--crac",
         type=float,
-        required=True,
+        default=0,
         help="Absorption coefficient of crystal (um-1)",
     )
     parser.add_argument(
         "--buac",
         type=float,
-        required=True,
+        default=0,
         help="Absorption coefficient of other components (um-1)",
     )
     parser.add_argument(
@@ -165,13 +165,6 @@ def set_parser():
         type=int,
         default=0,
         help="Flag for full iteration (break on encountering an air point)",
-    )
-
-    parser.add_argument(
-        "--full-reflection",
-        type=str2bool,
-        default=False,
-        help="Flag for full reflection (True/False)",
     )
     parser.add_argument(
         "--pixel-size-x",

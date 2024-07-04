@@ -28,7 +28,7 @@ You can either create a new environment
 conda create --name anacor python==3.8 # Recommended
 or
 python -m venv anacor
-# Not Recommended, in case conda doesn't work
+# Not Recommended, just in case conda doesn't work
 # then you need to source /path/anacor/bin/activate to activate
 ```
 or install in your currnet environment
