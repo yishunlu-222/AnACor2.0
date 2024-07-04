@@ -2,7 +2,7 @@ import numpy as np
 import pdb
 # import matplotlib.pyplot as plt
 from numba import jit
-from utils.utils_rt import cal_coord
+from .utils_rt import cal_coord
 
 def top_increment_ratio(theta,phi):
     assert theta > 0

@@ -8,7 +8,7 @@ import re
 # from dials.array_family import flex
 from ast import literal_eval
 import argparse
-from utils.utils_rt import (
+from AnACor.utils.utils_rt import (
     dials_2_thetaphi,
     thetaphi_2_myframe,
     myframe_2_dials,
@@ -19,7 +19,7 @@ from utils.utils_rt import (
     cal_rate,
     cal_rate_single,
 )
-from utils.utils_os import python_2_c_3d, kp_rotation,stacking
+from AnACor.utils.utils_os import python_2_c_3d, kp_rotation,stacking
 import gc
 import sys
 import multiprocessing as mp
@@ -50,7 +50,8 @@ def loading_absorption_map(gridding_dir,afterfix):
             except:
                 c = -1
             return int(c)
-    absorption_map_list =[name for name in os.listdir(gridding_dir) if name.endswith(afterfix)]
+    # pdb.set_trace()
+    absorption_map_list =[name for name in os.listdir(gridding_dir) if afterfix in name]
     if len(absorption_map_list) == 0:
         return None
     absorption_map_list.sort(key=sort_key)
@@ -81,7 +82,7 @@ def worker_function_create_gridding(
     len_data = len(gridding_data)
     arr_thetaphi = []
     arr_map = []
-
+    
     up = low + len(gridding_data)
     shape = np.array(label_list.shape)
 
@@ -133,6 +134,7 @@ def worker_function_create_gridding(
         ct.c_int,  # IsExp
     ]
     print("gridding method is {}".format(gridding_method))
+   
     assert gridding_method < 3
     # absorption_map = []
     absorption_map = np.zeros((len(arr_map),len(coord_list)), dtype=np.float32)
@@ -192,6 +194,7 @@ def worker_function_create_gridding(
                     0,
                 )
                 else:
+                    # pdb.set_trace(  )
                     absorption = anacor_lib_cpu.ray_tracing_single_gridding(
                         coord,
                         rotated_s1,
@@ -262,6 +265,7 @@ def mp_create_gridding(
     gridding_data = gridding_data[low:up]
     #  
     processes = []
+    # pdb.set_trace()
     if num_processes > 1:
         each_core = int(len_data // num_processes)
         data_copies = [label_list.copy() for _ in range(num_processes)]
@@ -385,6 +389,7 @@ def mp_interpolation_gridding(
 ):
      
     # abs_gridding = np.array(abs_gridding)  # .astype(np.float32)
+    # pdb.set_trace()
     try:
         
         abs_gridding = abs_gridding.reshape((args.gridding_phi, args.gridding_theta, len(coord_list)))
@@ -441,7 +446,7 @@ def mp_interpolation_gridding(
     )
 
 
-    interpolation_gridding(
+    corr=interpolation_gridding(
             t1,
             low,
             selected_data,
@@ -468,7 +473,7 @@ def mp_interpolation_gridding(
             dtype=abs_gridding.dtype,
             shape=abs_gridding.shape,
         )
-
+    return corr
 
 def interpolation_gridding(
     t1,
@@ -598,12 +603,14 @@ def interpolation_gridding(
 
     if args.openmp:
         for i, row in enumerate(selected_data):
-            intensity = float(row["intensity.sum.value"])
-            # all are in x, y , z in the origin dials file
-            miller_index = row["miller_index"]
-
-            scattering_vector = literal_eval(row["s1"])
-            rotation_frame_angle = literal_eval(row["xyzobs.mm.value"])[2]
+   
+            
+            if type(row['s1']) == str:
+                scattering_vector = literal_eval(row['s1'])
+                rotation_frame_angle = literal_eval(row['xyzobs.mm.value'])[2]
+            else:
+                scattering_vector = row['s1']
+                rotation_frame_angle = row['xyzobs.mm.value'][2]
             rotation_frame_angle += offset / 180 * np.pi
             arr_scattering.append(scattering_vector)
             arr_omega.append(rotation_frame_angle)
@@ -646,12 +653,13 @@ def interpolation_gridding(
         
     else:
         for i, row in enumerate(selected_data):
-            intensity = float(row["intensity.sum.value"])
-            # all are in x, y , z in the origin dials file
-            scattering_vector = literal_eval(row["s1"])
-            miller_index = row["miller_index"]
-
-            rotation_frame_angle = literal_eval(row["xyzobs.mm.value"])[2]
+            # pdb.set_trace()
+            if type(row['s1']) == str:
+                scattering_vector = literal_eval(row['s1'])
+                rotation_frame_angle = literal_eval(row['xyzobs.mm.value'])[2]
+            else:
+                scattering_vector = row['s1']
+                rotation_frame_angle = row['xyzobs.mm.value'][2]
             rotation_frame_angle += offset / 180 * np.pi
             rotation_matrix_frame_omega = kp_rotation(omega_axis, rotation_frame_angle)
 
@@ -802,6 +810,7 @@ def interpolation_gridding(
         json.dump(t2 - t1, f1, indent=2)
     print("{} ({} ) process is Finish!!!!".format(os.getpid(), up))
 
+    return corr
 
 def memorylog():
     import psutil

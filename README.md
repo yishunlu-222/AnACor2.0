@@ -19,7 +19,10 @@ The following packages are required by AnACor2.0. All testing has used the follo
 
 Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
 
-## Install
+## Installation
+
+#### How to install
+
 You can either create a new environment 
 ```
 conda create --name anacor python==3.8
@@ -32,6 +35,12 @@ cd AnACor2.0; pip install -e .
 ```
 This Software is already installed in Beamline I23 Diamond Light Source. If you are working at I23, ```source /dls/science/groups/i23/yishun/dials_317/dials``` can activate AnACor2.0 .
 
+#### PyTest
+You can run pytest to check if all modules are working properly in your machine by:
+```
+cd tests; pytest
+```
+A `pytest.log file` is generated, capturing the testing results and computational performance for all acceleration models used in simulating crystal models, specifically spherical and cylindrical shapes. The calculated absorption factors are compared with the results from the International Tables for Crystallography (Maslen, 2006), available at [International Tables for Crystallography](https://it.iucr.org/Cb/ch6o3v0001/sec6o3o1/).
 
 
 ## How to run
@@ -103,3 +112,6 @@ Therefore you can go straight to run [Scaling](#2-scaling) after `anacor.init`. 
 
 https://yishunlu-222.github.io/anacor.github.io/
 
+## Reference
+
+- Maslen, E. N. (2006). International Tables for Crystallography, volume C, chapter 6.3.3, Absorption corrections, pages600–608. 3rd edition.

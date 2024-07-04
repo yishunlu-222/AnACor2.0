@@ -8,10 +8,10 @@ import multiprocessing as mp
 from ast import literal_eval
 from multiprocessing import Pool
 try:
-    from utils.utils_rt import *
-    from utils.utils_ib import *
-    from utils.utils_os import stacking,python_2_c_3d,kp_rotation
-    from utils.utils_mp import *
+    from .utils_rt import *
+    from .utils_ib import *
+    from .utils_os import stacking,python_2_c_3d,kp_rotation
+    from .utils_mp import *
 except:
     from AnACor.utils.utils_rt import *
     from AnACor.utils.utils_ib import *
@@ -42,9 +42,10 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
                     offset, full_iteration, store_paths, printing, num_cls,logger):
     corr = []
     dict_corr = []
-    arr_scattering = []
+    arr_scattering = [] 
     arr_omega = []
     IsExp = 1
+    # 
     xray = -np.array(axes_data[1]["direction"])
     shape = np.array(label_list.shape)
     try:
@@ -108,7 +109,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
         ct.c_int,                      # IsExp
     ]
     label_list_c = python_2_c_3d(label_list)
-
+  
     if args.partial_illumination:
         centre_point_on_axis=np.array([args.centre_point_z,
                                     args.centre_point_y, 
@@ -146,16 +147,20 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
             ct.c_int,  # store_paths
             ct.c_int  # gpumethod
         ]
-
+    # pdb.set_trace()
     if args.gpu or args.openmp:
         for i, row in enumerate(selected_data):
 
-            intensity = float(row['intensity.sum.value'])
-            # all are in x, y , z in the origin dials file
-            miller_index = row['miller_index']
-
-            scattering_vector = literal_eval(row['s1'])
-            rotation_frame_angle = literal_eval(row['xyzobs.mm.value'])[2]
+            # intensity = float(row['intensity.sum.value'])
+            # # all are in x, y , z in the origin dials file
+            # miller_index = row['miller_index']
+            
+            if type(row['s1']) == str:
+                scattering_vector = literal_eval(row['s1'])
+                rotation_frame_angle = literal_eval(row['xyzobs.mm.value'])[2]
+            else:
+                scattering_vector = row['s1']
+                rotation_frame_angle = row['xyzobs.mm.value'][2]
             rotation_frame_angle += offset / 180 * np.pi
             arr_scattering.append(scattering_vector)
             arr_omega.append(rotation_frame_angle)
@@ -164,6 +169,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
         arr_omega = np.array(arr_omega)
 
         if args.gpu:
+            
             t1 = time.time()
             logger.info("\033[92m GPU  is used for ray tracing \033[0m")
             print("\033[92m GPU  is used for ray tracing \033[0m")
@@ -190,6 +196,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
             logger.info('GPU time is {}'.format(t2-t1))
             print('GPU time is {}'.format(t2-t1))
         elif args.openmp is True:
+           
             logger.info("\033[92m Openmp/C with {} cores is used for ray tracing \033[0m".format(
                 args.num_workers))
             print(
@@ -214,12 +221,14 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
     else:
         for i, row in enumerate(selected_data):
 
-            intensity = float(row['intensity.sum.value'])
+            # intensity = float(row['intensity.sum.value'])
             # all are in x, y , z in the origin dials file
-            scattering_vector = literal_eval(row['s1'])
-            miller_index = row['miller_index']
-
-            rotation_frame_angle = literal_eval(row['xyzobs.mm.value'])[2]
+            if type(row['s1']) == str:
+                scattering_vector = literal_eval(row['s1'])
+                rotation_frame_angle = literal_eval(row['xyzobs.mm.value'])[2]
+            else:
+                scattering_vector = row['s1']
+                rotation_frame_angle = row['xyzobs.mm.value'][2]
             rotation_frame_angle += offset / 180 * np.pi
             rotation_matrix_frame_omega = kp_rotation(
                 omega_axis, rotation_frame_angle)
@@ -248,6 +257,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
                     coefficients, label_list_c, shape,
                     args.full_iteration, args.store_paths, num_cls, IsExp)
             elif args.single_c:
+                # pdb.set_trace()
                 if i == 0:
                     logger.info("\033[92m C with {} cores is used for ray tracing \033[0m".format(
                         args.num_workers))
@@ -422,7 +432,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
                 # with open(os.path.join(save_dir, "{}_dict_refl_{}.json".format(dataset, up)),
                 #           "w") as f1:  # Pickling
                 #     json.dump(dict_corr, f1, indent=2)
-
+  
     with open(os.path.join(save_dir, "{}_refl_{}.json".format(dataset, up)), "w") as fz:  # Pickling
         json.dump(corr, fz, indent=2)
 
@@ -432,7 +442,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
         json.dump(t2 - t1, f1, indent=2)
     print('{} ({} ) process is Finish!!!!'.format(os.getpid(), up))
     logger.info('{} ({} ) process is Finish!!!!'.format(os.getpid(), up))
-
+    return corr
 # def worker_function_am(t1, low,  dataset, map_data, selected_data, label_list,
 #                        voxel_size, coefficients, F, coord_list,
 #                        omega_axis, axes_data, save_dir, args,

@@ -12,6 +12,7 @@ from sklearn.cluster import KMeans,MiniBatchKMeans
 from scipy.spatial import cKDTree,distance
 from sklearn.decomposition import PCA
 import time
+import warnings
 np.set_printoptions(suppress=True)
 
 np.random.seed(0)
@@ -163,53 +164,54 @@ def generate_sampling(label_list, cr=3, dim='z', sampling_size=5000,method='even
         coord_list = np.array(coord_list_even)
     elif method =='stratified':
         #https://scikit-learn.org/stable/modules/clustering.html
-
-        from sklearn.cluster import AgglomerativeClustering,BisectingKMeans
-        # model = AgglomerativeClustering(n_clusters=sampling)
-        
-        coordinate_list = np.linspace(0, len(crystal_coordinate), num=sampling, endpoint=False, dtype=int)
-        # print(" {} voxels in even sampling are calculated".format(len(coordinate_list)))
-        init_list=[]
-        for i in coordinate_list:
-            init_list.append(crystal_coordinate[i])
-
-        batch_size= 2 ** (np.round(np.log2(1/sampling_ratio)).astype(int))
-        init_list =  np.array(init_list)
-
-        clustering='kmeans'
-        if clustering=='kmeans':
-            pca = PCA(n_components=3)
-            transformed_coordinates = pca.fit_transform(crystal_coordinate)
-            model = MiniBatchKMeans(n_clusters=sampling, batch_size=batch_size, init='k-means++',verbose=0).fit(transformed_coordinates)
+        with warnings.catch_warnings():
+            warnings.simplefilter("ignore", DeprecationWarning)
+            from sklearn.cluster import AgglomerativeClustering,BisectingKMeans
+            # model = AgglomerativeClustering(n_clusters=sampling)
             
-            region_centroids  = pca.inverse_transform(model.cluster_centers_)
-            # original_space_centroids = np.around(original_space_centroids).astype(int)
-            # for coords in region_centroids:
-            #     z, y, x = coords
-            #     yes.append(label_list[z, y, x])
-            # coord_list = np.array([coords for coords, label in zip(region_centroids, yes) if label == 3])
-            # pdb.set_trace()
-        elif clustering=='bisection':
-            model = BisectingKMeans(n_clusters=sampling,init='random').fit(crystal_coordinate)
+            coordinate_list = np.linspace(0, len(crystal_coordinate), num=sampling, endpoint=False, dtype=int)
+            # print(" {} voxels in even sampling are calculated".format(len(coordinate_list)))
+            init_list=[]
+            for i in coordinate_list:
+                init_list.append(crystal_coordinate[i])
 
-        print("Kmeans straified is applied")
-        t1 = time.time()
+            batch_size= 2 ** (np.round(np.log2(1/sampling_ratio)).astype(int))
+            init_list =  np.array(init_list)
 
-        # kmeans = MiniBatchKMeans(n_clusters=sampling, batch_size=batch_size, n_init=10,init='k-means++',verbose=0).fit(crystal_coordinate)       
-        labels = model.labels_
-        # region_centroids = model.cluster_centers_
-        region_centroids = np.around(region_centroids).astype(int)
-        yes=[]
-        for coords in region_centroids:
-            z, y, x = coords
-            yes.append(label_list[z, y, x])
-        coord_list = np.array([coords for coords, label in zip(region_centroids, yes) if label == 3])
-        t2=time.time()
+            clustering='kmeans'
+            if clustering=='kmeans':
+                pca = PCA(n_components=3)
+                transformed_coordinates = pca.fit_transform(crystal_coordinate)
+                model = MiniBatchKMeans(n_clusters=sampling, batch_size=batch_size, init='k-means++',verbose=0).fit(transformed_coordinates)
+                
+                region_centroids  = pca.inverse_transform(model.cluster_centers_)
+                # original_space_centroids = np.around(original_space_centroids).astype(int)
+                # for coords in region_centroids:
+                #     z, y, x = coords
+                #     yes.append(label_list[z, y, x])
+                # coord_list = np.array([coords for coords, label in zip(region_centroids, yes) if label == 3])
+                # pdb.set_trace()
+            elif clustering=='bisection':
+                model = BisectingKMeans(n_clusters=sampling,init='random').fit(crystal_coordinate)
+
+            print("Kmeans straified is applied")
+            t1 = time.time()
+
+            # kmeans = MiniBatchKMeans(n_clusters=sampling, batch_size=batch_size, n_init=10,init='k-means++',verbose=0).fit(crystal_coordinate)       
+            labels = model.labels_
+            # region_centroids = model.cluster_centers_
+            region_centroids = np.around(region_centroids).astype(int)
+            yes=[]
+            for coords in region_centroids:
+                z, y, x = coords
+                yes.append(label_list[z, y, x])
+            coord_list = np.array([coords for coords, label in zip(region_centroids, yes) if label == 3])
+            t2=time.time()
 
 
-        print("time for building kmeans is {}".format(t2-t1))
-        t3=time.time()
-        print("time for finding closest coordinate is {}".format(t3-t2))
+            print("time for building kmeans is {}".format(t2-t1))
+            t3=time.time()
+            print("time for finding closest coordinate is {}".format(t3-t2))
         # pdb.set_trace()
     #     else:
     #         kmeans = MiniBatchKMeans(n_clusters=kmeans_cluster, batch_size=1024*8, n_init=10,init='random',verbose=0).fit(crystal_coordinate)       

@@ -11,7 +11,7 @@ def get_gpu_model():
         result = subprocess.run(['nvidia-smi', '-L'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0:
             raise RuntimeError("nvidia-smi command failed")
-
+        print(result.stdout)
         # Example output: GPU 0: Tesla V100-SXM2-16GB (UUID: GPU-...)
         match = re.search(r'GPU \d+: ([\w\s-]+)', result.stdout)
         if match:
@@ -28,10 +28,13 @@ class CustomBuild(build_ext):
         if not gpu_model:
             raise RuntimeError("Failed to detect GPU model")
         print(f"GPU model {gpu_model} is found, compiling CUDA based on this Type")
+        gpu_model.replace('nvidia','')
         # Change to the directory containing the Makefile
         os.chdir('./AnACor/src')
+        # import pdb
+        # pdb.set_trace() 
         # Run the make command with the detected GPU model
-        subprocess.check_call(['make'])
+        subprocess.check_call(['make', f'ARCH={gpu_model}'])
         # Return to the original directory
         os.chdir('../../')
         super().run()
@@ -90,6 +93,7 @@ setup(
         'requests',
         'scipy',
         'pytest',
+        'pytest-order',
     ],
     tests_require=['pytest'],
 )
