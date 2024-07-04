@@ -138,8 +138,8 @@ def configure():
     
     if not sm_number:
         raise RuntimeError(f"SM number for GPU model {gpu_model} not found")
-    
-    os.chdir('./AnACor/src')
+    abs_path = os.path.abspath(os.path.dirname(__file__))
+    os.chdir(os.path.join(abs_path,'./src'))
     subprocess.check_call(['make', f'SM={sm_number}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     os.chdir('../../')
 
