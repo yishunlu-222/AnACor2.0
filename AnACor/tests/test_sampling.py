@@ -40,7 +40,8 @@ class TestBasic:
             assert self.sphere_simulation is not None
             assert self.cylinder_simulation is not None
         compile_files=["ray_tracing_gpu.so","ray_tracing_cpu.so","gridding_interpolation.so"]
-        compile_pth = ["AnACor/src"]
+        abs_pth = os.path.abspath(os.path.join(os.path.dirname(__file__),"../"))
+        compile_pth = ["./src"]
         for file in compile_files:
             for pth in compile_pth:
                 try:
