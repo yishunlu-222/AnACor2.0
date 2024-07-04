@@ -6,9 +6,10 @@ AnACor2.0: A GPU-accelerated open-source software package for analytical absorpt
 
 ## Requirements
 
-#### Minimum hardware requirements
+#### Minimum Hardware requirements
 
-	RAM >= 16GB
+- RAM: 16 GB or more
+- GPU: NVIDIA GPU with Pascal architecture (GTX 1000 series) or newer
 
 #### Package requirements
 The following packages are required by AnACor2.0. All testing has used the following versions, but later versions should also work.
@@ -21,9 +22,9 @@ The following packages are required by AnACor2.0. All testing has used the follo
 	scipy==1.10.1
 	numpy==1.24.4
 	PyYAML==6.0.1l
-
+	*GCC>=11.0
 Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
-
+*If your GCC is lower than 11, GSL for interpolation is incompatible with AnACor, so you can't use Gridding method.
 ## Installation
 
 #### How to install

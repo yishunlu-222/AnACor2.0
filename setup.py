@@ -5,36 +5,37 @@ import subprocess
 import os
 import re
 import sys
+from .AnACor.configure import GPU_SM_MAPPING, get_gpu_model
 
-def get_gpu_model():
-    try:
-        result = subprocess.run(['nvidia-smi', '-L'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
-        if result.returncode != 0:
-            raise RuntimeError("nvidia-smi command failed")
-        print(result.stdout)
-        # Example output: GPU 0: Tesla V100-SXM2-16GB (UUID: GPU-...)
-        match = re.search(r'GPU \d+: ([\w\s-]+)', result.stdout)
-        if match:
-            return match.group(1).strip().lower().replace(' ', '')
-        else:
-            raise RuntimeError("Could not parse nvidia-smi output")
-    except Exception as e:
-        print(f"Error detecting GPU model: {e}")
-        return None
+# def get_gpu_model():
+#     try:
+#         result = subprocess.run(['nvidia-smi', '-L'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+#         if result.returncode != 0:
+#             raise RuntimeError("nvidia-smi command failed")
+#         print(result.stdout)
+#         # Example output: GPU 0: Tesla V100-SXM2-16GB (UUID: GPU-...)
+#         match = re.search(r'GPU \d+: ([\w\s-]+)', result.stdout)
+#         if match:
+#             return match.group(1).strip().lower().replace(' ', '')
+#         else:
+#             raise RuntimeError("Could not parse nvidia-smi output")
+#     except Exception as e:
+#         print(f"Error detecting GPU model: {e}")
+#         return None
  
 class CustomBuild(build_ext):
     def run(self):
-        gpu_model = get_gpu_model()
+        gpu_model,sm_number = get_gpu_model()
         if not gpu_model:
             raise RuntimeError("Failed to detect GPU model")
         print(f"GPU model {gpu_model} is found, compiling CUDA based on this Type")
-        gpu_model.replace('nvidia','')
+        # gpu_model.replace('nvidia','')
         # Change to the directory containing the Makefile
         os.chdir('./AnACor/src')
         # import pdb
         # pdb.set_trace() 
         # Run the make command with the detected GPU model
-        subprocess.check_call(['make', f'ARCH={gpu_model}'])
+        subprocess.check_call(['make', f'SM={sm_number}'])
         # Return to the original directory
         os.chdir('../../')
         super().run()
@@ -78,6 +79,7 @@ setup(
             'anacor.postprocess_lite = AnACor.postprocess_lite:main',
             'anacor.postprocess = AnACor.postprocess_lite:main',
             'anacor.init = AnACor.initialization:main',
+            'anacor.configure = AnACor.configure:configure',
         ],
     },
     install_requires=[

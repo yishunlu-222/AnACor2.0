@@ -355,14 +355,14 @@ def mp_create_gridding(
         json.dump(time.time() - t1, fz, indent=2)
 
 
-def create_interpolation_gridding(
-    theta_list, phi_list, data, interpolation_method="linear"
-):
-    interp_func = RegularGridInterpolator(
-        (theta_list, phi_list), data, method=interpolation_method
-    )
+# def create_interpolation_gridding(
+#     theta_list, phi_list, data, interpolation_method="linear"
+# ):
+#     interp_func = RegularGridInterpolator(
+#         (theta_list, phi_list), data, method=interpolation_method
+#     )
 
-    return interp_func
+#     return interp_func
 
 
 def mp_interpolation_gridding(
@@ -385,7 +385,7 @@ def mp_interpolation_gridding(
     printing,
     num_cls,
     num_processes,
-    interpolation_method="linear",afterfix=''
+    interpolation_method="nearest",afterfix=''
 ):
      
     # abs_gridding = np.array(abs_gridding)  # .astype(np.float32)

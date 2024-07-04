@@ -262,7 +262,7 @@ def main():
         mp_interpolation_gridding(t1, low,  abs_gridding, select_data, label_list,
                           voxel_size, coefficients, F, coord_list,
                           omega_axis, axes_data, gridding_dir, args,
-                          offset, full_iteration, store_paths, printing, num_cls,num_processes,args.interpolation_method)
+                          offset, full_iteration, store_paths, printing, num_cls,num_processes,args.inter_method)
 
     else:
 
