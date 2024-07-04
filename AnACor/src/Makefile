@@ -48,16 +48,16 @@ sharedlibrary_cpu: ray_tracing.o ray_tracing_basic.o bisection.o testkit.o Makef
 	$(GCC) -shared -o ray_tracing_cpu.so  -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) ray_tracing.o ray_tracing_basic.o bisection.o testkit.o 
 
 ray_tracing.o: $(pth)ray_tracing.c
-	$(GCC) -c $(pth)ray_tracing.c $(GCC_OPTS) -o ray_tracing.o
+	$(GCC) -c $(pth)ray_tracing.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -o ray_tracing.o
 
 ray_tracing_basic.o: $(pth)ray_tracing_basic.c
-	$(GCC) -c $(pth)ray_tracing_basic.c $(GCC_OPTS) -o ray_tracing_basic.o
+	$(GCC) -c $(pth)ray_tracing_basic.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -o ray_tracing_basic.o
 
 bisection.o: $(pth)bisection.c
-	$(GCC) -c $(pth)bisection.c $(GCC_OPTS) -o bisection.o
+	$(GCC) -c $(pth)bisection.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -o bisection.o
 
 testkit.o: $(pth)testkit.c
-	$(GCC) -c $(pth)testkit.c $(GCC_OPTS) -o testkit.o
+	$(GCC) -c $(pth)testkit.c -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS)-o testkit.o
 
 
 

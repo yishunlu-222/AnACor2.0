@@ -182,6 +182,69 @@ def detect_file_type(file_path):
 def main ( ) :
     args = set_parser( )
 
+    ### define the default values of some optional arguments  ###
+    
+    if hasattr(args, 'openmp'):
+            pass
+    else:
+        args.by_c=False
+
+    if hasattr(args, 'full_iter'):
+            pass
+    else:
+        args.full_iter=0
+        
+    if hasattr(args, 'full_reflection'):
+            pass
+    else:
+        args.full_reflection=False
+        
+    if hasattr(args, 'single_c'):
+            pass
+    else:
+        args.single_c=False
+    
+    if hasattr(args, 'sampling_method'):
+            pass
+    else:
+        args.sampling_method='even'
+
+    if hasattr(args, 'sampling_ratio'):
+            pass
+    else:
+        args.sampling_ratio=0.05
+
+    if hasattr(args, 'gpu'):
+            pass
+    else:
+        args.gpu=True
+
+    if hasattr(args, 'openmp'):
+            pass
+    else:
+        args.openmp=True
+
+    if hasattr(args, 'absorption_map'):
+            pass
+    else:
+        args.absorption_map=False
+
+    # if hasattr(args, 'sampling_num'):
+    #         pass
+    # else:
+    #     args.sampling_num=10000
+    if hasattr(args, 'bisection'):
+            pass
+    else:
+        args.bisection=False
+#     cluster bash file
+    if hasattr(args, 'partial_illumination'):
+        args.openmp=False
+        args.single_c=False
+        args.gpu=False
+        args.bisection=False
+    else:
+        args.partial_illumination=False
 
     save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
     create_save_dir(args)
@@ -278,64 +341,6 @@ def main ( ) :
 
 
 
-    ### define the default values of some optional arguments  ###
-
-    if hasattr(args, 'openmp'):
-            pass
-    else:
-        args.by_c=False
-
-    if hasattr(args, 'full_iter'):
-            pass
-    else:
-        args.full_iter=0
-
-    if hasattr(args, 'single_c'):
-            pass
-    else:
-        args.single_c=False
-    
-    if hasattr(args, 'sampling_method'):
-            pass
-    else:
-        args.sampling_method='even'
-
-    if hasattr(args, 'sampling_ratio'):
-            pass
-    else:
-        args.sampling_ratio=0.05
-
-    if hasattr(args, 'gpu'):
-            pass
-    else:
-        args.gpu=True
-
-    if hasattr(args, 'openmp'):
-            pass
-    else:
-        args.openmp=True
-
-    if hasattr(args, 'absorption_map'):
-            pass
-    else:
-        args.absorption_map=False
-
-    # if hasattr(args, 'sampling_num'):
-    #         pass
-    # else:
-    #     args.sampling_num=10000
-    if hasattr(args, 'bisection'):
-            pass
-    else:
-        args.bisection=False
-#     cluster bash file
-    if hasattr(args, 'partial_illumination'):
-        args.openmp=False
-        args.single_c=False
-        args.gpu=False
-        args.bisection=False
-    else:
-        args.partial_illumination=False
     with open( os.path.join( save_dir , "mpprocess_script.sh" ) , "w" ) as f :
 
         f.write( "#!/bin/sh\n" )

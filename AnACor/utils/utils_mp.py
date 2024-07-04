@@ -50,11 +50,9 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
     shape = np.array(label_list.shape)
     pdb.set_trace()
     try:
-        anacor_lib_cpu = ct.CDLL(os.path.join(os.path.dirname(
-            os.path.abspath(__file__)), './src/ray_tracing_cpu.so'))
+        anacor_lib_cpu = ct.CDLL(os.path.join(os.path.dirname(os.path.abspath(__file__)), './src/ray_tracing_cpu.so'))
     except:
-        anacor_lib_cpu = ct.CDLL(os.path.join(os.path.dirname(os.path.dirname(
-            os.path.abspath(__file__))), './src/ray_tracing_cpu.so'))
+        anacor_lib_cpu = ct.CDLL(os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), './src/ray_tracing_cpu.so'))
     # anacor_lib_cpu = ct.CDLL( './ray_tracing.so' )s
     # gcc -shared -o ray_tracing.so ray_tracing.c -fPIC
     up = low+len(selected_data)
