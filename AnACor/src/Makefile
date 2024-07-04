@@ -15,18 +15,19 @@ NVCC = ${CUDA_HOME}/bin/nvcc
 
 
 # Determine the architecture flag based on the GPU model
-ifeq ($(ARCH),h100)
+ifneq ($(findstring h100,$(ARCH)),)
   SM_ARCH = sm_90
-else ifeq ($(ARCH),a100)
+else ifneq ($(findstring a100,$(ARCH)),)
   SM_ARCH = sm_80
-else ifeq ($(ARCH),v100)
+else ifneq ($(findstring v100,$(ARCH)),)
   SM_ARCH = sm_70
-else ifeq ($(ARCH),titanx)
-  SM_ARCH = sm_70
+else ifneq ($(findstring titanx,$(ARCH)),)
+  SM_ARCH = sm_61
 else
   # Default architecture
   SM_ARCH = sm_70
 endif
+
 
 NVCCFLAGS = -O3 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -lineinfo
 NVCCFLAGS_D = -O0 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -G -g
