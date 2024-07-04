@@ -166,6 +166,13 @@ def set_parser():
         default=0,
         help="Flag for full iteration (break on encountering an air point)",
     )
+
+    parser.add_argument(
+        "--full-reflection",
+        type=str2bool,
+        default=False,
+        help="Flag for full reflection (True/False)",
+    )
     parser.add_argument(
         "--pixel-size-x",
         type=float,

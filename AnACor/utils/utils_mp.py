@@ -48,6 +48,7 @@ def worker_function(t1, low,  dataset, selected_data, label_list,
     # 
     xray = -np.array(axes_data[1]["direction"])
     shape = np.array(label_list.shape)
+    pdb.set_trace()
     try:
         anacor_lib_cpu = ct.CDLL(os.path.join(os.path.dirname(
             os.path.abspath(__file__)), './src/ray_tracing_cpu.so'))
