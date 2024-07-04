@@ -137,7 +137,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                     module load gcc
                     module load cuda
                    
-                    
+                    make
                     chmod 755 {job_script}\n  
                     bash {job_script}""" # f"#!/bin/bash\n echo 'testing'"  cd {makefile}  make
             
