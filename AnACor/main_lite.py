@@ -6,25 +6,20 @@ import numpy as np
 import ctypes as ct
 import multiprocessing as mp
 import sys
+
 parent_dir =os.path.dirname( os.path.abspath(__file__))
 sys.path.append(parent_dir)
 # from dials.array_family import flex
 from ast import literal_eval
 from multiprocessing import Pool
-try:
-    from utils.utils_rt import *
-    from utils.utils_ib import *
-    from utils.utils_gridding import mp_create_gridding,mp_interpolation_gridding,loading_absorption_map 
-    from utils.utils_os import stacking,python_2_c_3d,kp_rotation
-    from utils.utils_mp import *
-    from utils.utils_resolution import model3D_resize
-except:
-    from AnACor.utils.utils_rt import *
-    from AnACor.utils.utils_ib import *
-    from AnACor.utils.utils_gridding import mp_create_gridding,mp_interpolation_gridding,loading_absorption_map
-    from AnACor.utils.utils_os import stacking,python_2_c_3d,kp_rotation
-    from AnACor.utils.utils_mp import *
-    from AnACor.utils.utils_resolution import model3D_resize
+
+from AnACor.utils.utils_rt import *
+from AnACor.utils.utils_ib import *
+from AnACor.utils.utils_gridding import mp_create_gridding,mp_interpolation_gridding,loading_absorption_map
+from AnACor.utils.utils_os import stacking,python_2_c_3d,kp_rotation
+from AnACor.utils.utils_mp import *
+from AnACor.utils.utils_resolution import model3D_resize
+from AnACor.configure import configure
 from anacor_logging import setup_logger
 from param import set_parser
 
@@ -47,6 +42,7 @@ def create_directory(directory_path):
 
 
 def main():
+    configure()
     global args
     args = set_parser()
     print("\n==========\n")
