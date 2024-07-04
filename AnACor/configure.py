@@ -126,7 +126,7 @@ def get_gpu_model():
                 sm_number = GPU_SM_MAPPING[key]
                 return gpu_name, sm_number
         
-        raise RuntimeError("Could not parse nvidia-smi output or find SM number for GPU model")
+        raise RuntimeError("Could not find SM number for GPU model. Probably not supported by AnACor.")
     except Exception as e:
         print(f"Error detecting GPU model: {e}")
         return None, None
