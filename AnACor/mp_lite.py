@@ -127,16 +127,15 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                 "standard_error": stderr_log,
                 "environment": {
                 # "PATH": os.getenv("PATH"),
-                    "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/12.2.0/bin:",
+                    "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/12.2.0/bin",
         "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
                 }
             },
             "script": 
                     f"""#!/bin/bash\n 
                     #SBATCH --mem=50GB
-                    # source /etc/profile.d/modules.sh
-                    # module load gcc
-                    # module load cuda
+                    #module load gcc
+                    #module load cuda
                     cd {makefile}
                     make 
                     chmod 755 {job_script}\n  
