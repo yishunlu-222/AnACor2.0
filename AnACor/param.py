@@ -259,8 +259,8 @@ def set_parser():
     parser.add_argument(
         "--interpolation-method",
         type=str,
-        default='linear',
-        help="Method for interpolation (e.g., 'linear', 'cubic')",
+        default='nearest',
+        help="Method for interpolation (e.g., 'linear', 'cubic','nearest')",
     )
     parser.add_argument(
         "--bisection-py",

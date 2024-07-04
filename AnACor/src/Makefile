@@ -10,7 +10,8 @@ LIB := -L${CUDA_HOME}/lib64 -lcudart -lcufft -lcuda
 LDFLAGS=-fopenmp
 GCC = gcc
 NVCC = ${CUDA_HOME}/bin/nvcc
-
+GSL_INCLUDE ?= /usr/local/include
+GSL_LIB ?= /usr/local/lib
 
 
 
@@ -23,7 +24,7 @@ else ifneq ($(findstring v100,$(ARCH)),)
   SM_ARCH = sm_70
 else ifneq ($(findstring titanx,$(ARCH)),)
   SM_ARCH = sm_61
-else
+elsenv
   # Default architecture
   SM_ARCH = sm_70
 endif
@@ -36,12 +37,14 @@ NVCCFLAGS_D = -O0 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompi
 #NVCCFLAGS = -O3 -arch=sm_70 --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -lineinfo  #V100
 GCC_OPTS =-O3 -fPIC -Wall -Wextra  $(LDFLAGS)  $(INC)
 GCC_OPTS_D =-O0 -fPIC -Wall -Wextra $(INC)  $(LDFLAGS)  -g
+GCC_OPTS_gridding =-O3 -fPIC -Wall -Wextra  $(LDFLAGS)  -L$(GSL_LIB) -I$(GSL_INCLUDE)  -lgsl -lgslcblas -lm 
 ANALYZE = FFT.exe
 
 all: clean sharedlibrary_cpu sharedlibrary_gpu sharedlibrary_interpolation
 debug: clean sharedlibrary_cpu_d sharedlibrary_gpu_d sharedlibrary_interpolation_d
 cpu: clean sharedlibrary_cpu
 gpu: clean sharedlibrary_gpu
+grid: sharedlibrary_interpolation
 
 
 
@@ -109,10 +112,10 @@ ray_tracing_gpu_d.o:  $(gpu_pth)ray_tracing_gpu.cu
 
 
 sharedlibrary_interpolation: gridding_interpolation.c ray_tracing_basic.o
-	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS) -lgsl -lgslcblas -lm gridding_interpolation.c ray_tracing_basic.o
+	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS) $(LDFLAGS)  gridding_interpolation.c ray_tracing_basic.o
 
 sharedlibrary_interpolation_d: gridding_interpolation.c ray_tracing_basic.o
-	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_D) $(LDFLAGS) -lgsl -lgslcblas -lm gridding_interpolation.c ray_tracing_basic.o
+	$(GCC) -shared -o gridding_interpolation.so  -fPIC -std=c99 $(GCC_OPTS_D) $(LDFLAGS) gridding_interpolation.c ray_tracing_basic.o
 
 
 
