@@ -30,31 +30,31 @@ import json
 
 
 
-def preprocess_dial_lite ( args , save_dir ) :
-    # from dials.util.filter_reflections import *
-    import subprocess
-    print('preprocessing dials data.....')
-    with open( os.path.join( save_dir , "preprocess_script.sh" ) , "w" ) as f :
-        f.write( "#!/bin/bash \n" )
-        f.write( "{} \n".format( args.dials_dependancy ) )
-        f.write( "expt_pth=\'{}\' \n".format( args.expt_path) )
-        f.write( "refl_pth=\'{}\' \n".format( args.refl_path ) )
-        f.write( "store_dir=\'{}\' \n".format( save_dir ) )
-        f.write( "dataset={} \n".format( args.dataset ) )
-        f.write( "full={} \n".format( args.full_reflection ) )
-        f.write( "dials.python {}  --dataset ${{dataset}} " 
-                 " --refl-filename ${{refl_pth}} " 
-                 "--expt-filename ${{expt_pth}} --full ${{full}} "
-                 "--save-dir ${{store_dir}}\n".format(os.path.join(os.path.dirname(os.path.abspath(__file__)),'lite/refl_2_json.py')) )
+# def preprocess_dial_lite ( args , save_dir ) :
+#     # from dials.util.filter_reflections import *
+#     import subprocess
+#     print('preprocessing dials data.....')
+#     with open( os.path.join( save_dir , "preprocess_script.sh" ) , "w" ) as f :
+#         f.write( "#!/bin/bash \n" )
+#         f.write( "{} \n".format( args.dials_dependancy ) )
+#         f.write( "expt_pth=\'{}\' \n".format( args.expt_path) )
+#         f.write( "refl_pth=\'{}\' \n".format( args.refl_path ) )
+#         f.write( "store_dir=\'{}\' \n".format( save_dir ) )
+#         f.write( "dataset={} \n".format( args.dataset ) )
+#         f.write( "full={} \n".format( args.full_reflection ) )
+#         f.write( "dials.python {}  --dataset ${{dataset}} " 
+#                  " --refl-filename ${{refl_pth}} " 
+#                  "--expt-filename ${{expt_pth}} --full ${{full}} "
+#                  "--save-dir ${{store_dir}}\n".format(os.path.join(os.path.dirname(os.path.abspath(__file__)),'lite/refl_2_json.py')) )
 
-    subprocess.run( ["chmod" , "+x" , os.path.join( save_dir , "preprocess_script.sh" )] )
-    try :
-        result = subprocess.run( ["bash" , os.path.join( save_dir , "preprocess_script.sh" )] , check = True ,
-                                 capture_output = True )
-        print( result.stdout.decode( ) )
+#     subprocess.run( ["chmod" , "+x" , os.path.join( save_dir , "preprocess_script.sh" )] )
+#     try :
+#         result = subprocess.run( ["bash" , os.path.join( save_dir , "preprocess_script.sh" )] , check = True ,
+#                                  capture_output = True )
+#         print( result.stdout.decode( ) )
 
-    except subprocess.CalledProcessError as e :
-        print( "Error: " , e )
+#     except subprocess.CalledProcessError as e :
+#         print( "Error: " , e )
 
 def set_parser ( ) :
     parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
@@ -172,7 +172,12 @@ def get_slurm_token():
     return user, token
 
 
-
+def detect_file_type(file_path):
+    _, file_extension = os.path.splitext(file_path)
+    if file_extension.lower() == '.json':
+        return "JSON"
+    else:
+        return file_extension.lower()
 
 def main ( ) :
     args = set_parser( )
@@ -199,9 +204,8 @@ def main ( ) :
     else :
         model_storepath = args.model_storepath
         
-    if os.path.isfile(os.path.join( save_dir , 'preprocess_script.sh' )) is False:
+
         
-        preprocess_dial_lite( args , save_dir )
     for file in os.listdir( save_dir ) :
         if '.json' in file :
             if args.full_reflection:
@@ -220,6 +224,21 @@ def main ( ) :
     py_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'main_lite.py' )
     logger = setup_logger(os.path.join(save_dir,'Logging' ,'mpprocess.log'))
     
+    if detect_file_type(expt_path) != "JSON" or detect_file_type(refl_path) != "JSON":
+        preprocess_dial_lite( args , save_dir,logger )
+        for file in os.listdir( save_dir ) :
+            if '.json' in file :
+                if args.full_reflection:
+                    if 'expt' in file and 'True' in file :
+                        expt_path = os.path.join( save_dir , file )
+                    if 'refl' in file and 'True' in file:
+                        refl_path = os.path.join( save_dir , file )
+                else:
+                    if 'expt' in file :
+                        expt_path = os.path.join( save_dir , file )
+                    if 'refl' in file:
+                        refl_path = os.path.join( save_dir , file )
+        
     try :
         with open( expt_path ) as f2 :
             axes_data = json.load( f2 )
@@ -234,27 +253,27 @@ def main ( ) :
                                     'please use --refl_path --expt-filename to specify' )
         raise RuntimeError( 'no reflections or experimental files in JSON format detected'
                                     'please use --refl_path --expt-filename to specify' )
-        if args.refl_path is None or args.expt_path is None:
-            logger.error( 'no reflections or experimental files inputed'
-                                'please use --refl_path --expt-filename to specify' )
-        else:
-            try :
-                with open( args.expt_path ) as f2 :
-                    axes_data = json.load( f2 )
-                print( "experimental data is given and loaded... \n" )
-                logger.info( "experimental data is given and loaded... \n" )
-                with open( args.refl_path ) as f1 :
-                    data = json.load( f1 )
-                print( "reflection table is given and loaded... \n" )
-                logger.info( "reflection table is given and loaded... \n" )
-            except :
-                logger.error( 'no reflections or experimental files in JSON format detected'
-                                    'please use --refl_path --expt-filename to specify' )
-                logger.info("converting refl and expt files into JSON files")
-                from .preprocess_lite import preprocess_dial_lite
-                preprocess_dial_lite( args , save_dir,logger )
-                with open( args.refl_path ) as f1 :
-                    data = json.load( f1 )
+        # if args.refl_path is None or args.expt_path is None:
+        #     logger.error( 'no reflections or experimental files inputed'
+        #                         'please use --refl_path --expt-filename to specify' )
+        # else:
+        #     try :
+        #         with open( args.expt_path ) as f2 :
+        #             axes_data = json.load( f2 )
+        #         print( "experimental data is given and loaded... \n" )
+        #         logger.info( "experimental data is given and loaded... \n" )
+        #         with open( args.refl_path ) as f1 :
+        #             data = json.load( f1 )
+        #         print( "reflection table is given and loaded... \n" )
+        #         logger.info( "reflection table is given and loaded... \n" )
+        #     except :
+        #         logger.error( 'no reflections or experimental files in JSON format detected'
+        #                             'please use --refl_path --expt-filename to specify' )
+        #         logger.info("converting refl and expt files into JSON files")
+        #         from .preprocess_lite import preprocess_dial_lite
+        #         preprocess_dial_lite( args , save_dir,logger )
+        #         with open( args.refl_path ) as f1 :
+        #             data = json.load( f1 )
 
 
 

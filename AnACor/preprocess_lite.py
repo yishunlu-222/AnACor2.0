@@ -192,7 +192,7 @@ def set_parser ( ) :
 
 def preprocess_dial_lite ( args , save_dir,logger ) :
     # from dials.util.filter_reflections import *
-    # pdb.set_trace() 
+    
     if os.path.isfile(args.expt_path) is False:
         logger.error("The experiment file is not found")
         print("The experiment file is not found")
