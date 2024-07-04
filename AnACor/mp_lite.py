@@ -137,6 +137,9 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                     #SBATCH --mem=50GB
                     #module load gcc
                     #module load cuda
+                    CUDA_HOME=/dls_sw/apps/cuda/12.4.0
+                    export PATH=$CUDA_HOME/bin:$PATH
+                    
                     cd {makefile}
                     make 
                     chmod 755 {job_script}\n  

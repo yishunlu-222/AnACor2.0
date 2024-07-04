@@ -117,7 +117,7 @@ def get_gpu_model():
         result = subprocess.run(['nvidia-smi', '--query-gpu=gpu_name', '--format=csv,noheader'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
         if result.returncode != 0:
             raise RuntimeError("nvidia-smi command failed")
-        
+        print(result.stdout)
         gpu_name = result.stdout.strip().lower()
         normalized_gpu_name = normalize_gpu_name(gpu_name)
         
@@ -135,7 +135,7 @@ def configure():
     gpu_model, sm_number = get_gpu_model()
     if not gpu_model:
         raise RuntimeError("Failed to detect GPU model")
-    
+    print(f"GPU model {gpu_model} is found, compiling CUDA based on this Type")
     if not sm_number:
         raise RuntimeError(f"SM number for GPU model {gpu_model} not found")
     abs_path = os.path.abspath(os.path.dirname(__file__))
