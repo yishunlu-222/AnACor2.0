@@ -75,13 +75,14 @@ class TestBasic:
             num_processes=os.cpu_count()
             gridding_dir='./'
             # 
+            pdb.set_trace()
             mp_create_gridding(t1, low, self.sphere_simulation,dataset,
                                 voxel_size, coefficients,coord_list,
                                 gridding_dir, arugments,
                                 offset, full_iteration, store_paths, printing,afterfix, num_cls, arugments.gridding_method,num_processes)
         
             abs_gridding=loading_absorption_map(gridding_dir,afterfix).astype(np.float64)
-
+            pdb.set_trace()
             corr=mp_interpolation_gridding(t1, low,  abs_gridding, selected_data, self.sphere_simulation,
                             voxel_size, coefficients, F, coord_list,
                             omega_axis, axes_data, gridding_dir, arugments,

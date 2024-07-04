@@ -256,12 +256,7 @@ def set_parser():
         default=False,
         help="Flag to enable gridding (True/False)",
     )
-    parser.add_argument(
-        "--interpolation-method",
-        type=str,
-        default='nearest',
-        help="Method for interpolation (e.g., 'linear', 'cubic','nearest')",
-    )
+
     parser.add_argument(
         "--bisection-py",
         type=str2bool,

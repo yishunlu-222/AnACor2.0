@@ -6,6 +6,11 @@ AnACor2.0: A GPU-accelerated open-source software package for analytical absorpt
 
 ## Requirements
 
+#### Minimum hardware requirements
+
+	RAM >= 16GB
+
+#### Package requirements
 The following packages are required by AnACor2.0. All testing has used the following versions, but later versions should also work.
 
 	python_version >= 3.8

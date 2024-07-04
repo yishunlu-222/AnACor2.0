@@ -36,7 +36,7 @@ class TestBasic:
 
             assert AnACor is not None
             assert worker_function is not None
-            assert generate_sampling is not None
+            assert generate_sampling is not None 
             assert self.sphere_simulation is not None
             assert self.cylinder_simulation is not None
         compile_files=["ray_tracing_gpu.so","ray_tracing_cpu.so","gridding_interpolation.so"]

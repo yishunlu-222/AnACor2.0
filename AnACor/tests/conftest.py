@@ -16,7 +16,7 @@ def pytest_sessionfinish(session, exitstatus):
         try:
             os.remove(json_file)
             # print(f"Removed {json_file}")
-        except OSError as e:
+        except OSError as e:  
             pass
             # print(f"Error removing {json_file}: {e}")
     npy_files = glob.glob(os.path.join(test_dir, '*.npy'))
