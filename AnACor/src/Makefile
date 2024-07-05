@@ -43,7 +43,7 @@ ANALYZE = FFT.exe
 all: clean sharedlibrary_cpu sharedlibrary_gpu sharedlibrary_interpolation
 debug: clean sharedlibrary_cpu_d sharedlibrary_gpu_d sharedlibrary_interpolation_d
 clean: clean
-cpu:  sharedlibrary_cpu
+cpu:  sharedlibrary_cpu sharedlibrary_interpolation
 gpu:  sharedlibrary_gpu
 grid: sharedlibrary_interpolation
 
