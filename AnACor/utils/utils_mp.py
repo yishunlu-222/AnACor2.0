@@ -7,17 +7,17 @@ import ctypes as ct
 import multiprocessing as mp
 from ast import literal_eval
 from multiprocessing import Pool
-try:
-    from .utils_rt import *
-    from .utils_ib import *
-    from .utils_os import stacking,python_2_c_3d,kp_rotation
-    from .utils_mp import *
-except:
-    from AnACor.utils.utils_rt import *
-    from AnACor.utils.utils_ib import *
+# try:
+#     from .utils_rt import *
+#     from .utils_ib import *
+#     from .utils_os import stacking,python_2_c_3d,kp_rotation
+#     from .utils_mp import *
+# except:
+from AnACor.utils.utils_rt import *
+from AnACor.utils.utils_ib import *
 
-    from AnACor.utils.utils_os import stacking,python_2_c_3d,kp_rotation
-    from AnACor.utils.utils_mp import *
+from AnACor.utils.utils_os import stacking,python_2_c_3d,kp_rotation
+from AnACor.utils.utils_mp import *
 
 def process_chunk(params):
     chunk, xray_direction, ray_direction, theta_1, phi_1, theta, phi, shape, voxel_size, coefficients, label_list = params
