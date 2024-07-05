@@ -380,6 +380,8 @@ def main ( ) :
         f.write( "store_dir={}\n".format(args.store_dir  ) )
         f.write( "logging_dir={}\n".format( os.path.join( save_dir , 'Logging' ) ) )
         f.write("set -e \n")
+        f.write( "echo 'AnACor is running....Please don't stop it'\n" )
+        f.write( "echo 'Please check the logs at {} '\n".format( os.path.join( save_dir , 'Logging' ) ) )
         f.write( f'nohup {sys.executable} -u  ${{py_file}}  --dataset ${{dataset}} '
                  '--loac ${loac} --liac ${liac} --crac ${crac}  --buac ${buac} --offset ${offset} '
                  ' --store-dir ${store_dir} --refl-path ${refl_pth} --expt-path ${expt_pth}  '
