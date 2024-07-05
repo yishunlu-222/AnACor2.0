@@ -123,11 +123,13 @@ source /path/to/installation/directory/dials-dev/dials_env.sh
 dials.scale Thaumatin_test.expt Thaumatin_test.refl anomalous=True absorption_level=high
 ```
 
-Then, you can go straight to run [Scaling](#2-scaling) after `anacor.init`. With assigning the data paths and these absorption coefficients below, the I/sigma and R factors improve a lot compared to the spherical harmonics correction used in Dials.
+Then, you can start a new *Shell and go straight to run [Scaling](#2-scaling) after `anacor.init`. With assigning the data paths and these absorption coefficients below, the I/sigma and R factors improve a lot compared to the spherical harmonics correction used in DIALS.
 
 | Sample    | Crystal | Liquor  | Loop    |
 |-----------|---------|---------|---------|
 | Thaumatin | 0.01926 | 0.02019 | 0.01864 |
+
+*DIALS env can have conflict with conda env
 
 **<span style="font-size:1.5em;">Detailed documented manual is below for more options and parameters.</span>**:
 
