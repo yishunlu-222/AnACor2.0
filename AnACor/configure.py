@@ -33,7 +33,7 @@ GPU_SM_MAPPING = {
     'gtx 1050': '61',
     'gtx 1030': '61',
     'gt 1010': '61',
-    'titan xp': '61',
+    'titan x (pascal)': '61',
     'tesla p40': '61',
     'tesla p4': '61',
     'discrete gpu': '61',
@@ -108,13 +108,15 @@ GPU_SM_MAPPING = {
 
 def normalize_gpu_name(gpu_name):
     # Normalize the GPU name to match the keys in the dictionary
-    gpu_name = gpu_name.replace('NVIDIA', '').strip().lower()
+    gpu_name = gpu_name.replace('nvidia', '').strip().lower()
     gpu_name = re.sub(r'\s+', ' ', gpu_name)
     return gpu_name
 
 def get_gpu_model():
     try:
         result = subprocess.run(['nvidia-smi', '--query-gpu=gpu_name', '--format=csv,noheader'], stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True)
+#        import pdb
+#        pdb.set_trace()
         if result.returncode != 0:
             raise RuntimeError("nvidia-smi command failed")
         print(result.stdout)
@@ -140,9 +142,7 @@ def configure():
         raise RuntimeError(f"SM number for GPU model {gpu_model} not found")
     abs_path = os.path.abspath(os.path.dirname(__file__))
     os.chdir(os.path.join(abs_path,'./src'))
-    # subprocess.check_call(['make', 'clean'])
-    # subprocess.check_call(['make', 'cpu'])
-    subprocess.check_call(['make','gpu', f'SM={sm_number}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+    subprocess.check_call(['make','gpu' ,f'SM={sm_number}'], stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
     os.chdir('../../')
 
 if __name__ == '__main__':
