@@ -212,7 +212,7 @@ def preprocess_dial_lite ( args , save_dir,logger ) :
         f.write( "store_dir=\'{}\' \n".format( save_dir ) )
         f.write( "dataset={} \n".format( args.dataset ) )
         f.write( "full={} \n".format( args.full_reflection ) )
-        f.write( "{}\ \n".format( args.dials_dependancy ) )
+        f.write( "{} \n".format( args.dials_dependancy ) )
         f.write( "dials.python {}  --dataset ${{dataset}} " 
                  " --refl-filename ${{refl_pth}} " 
                  "--expt-filename ${{expt_pth}} --full ${{full}} "

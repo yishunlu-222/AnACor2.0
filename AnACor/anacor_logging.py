@@ -13,20 +13,23 @@ class JsonFormatter(logging.Formatter):
 
 def setup_logger(filename='./logging.log'):
     logger = logging.getLogger('json_logger')
-    
-    logger = logging.getLogger('json_logger')
 
     # Check if the logger already has handlers
     if not logger.handlers:
         # Create a file handler that logs to a JSON file
-        handler = logging.FileHandler(filename, mode="w", delay=True)
-        formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
-        handler.setFormatter(formatter)
+        file_handler = logging.FileHandler(filename, mode="w", delay=True)
+        file_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        file_handler.setFormatter(file_formatter)
         logger.setLevel(logging.INFO)
-        logger.addHandler(handler)
+        logger.addHandler(file_handler)
+
+        # Create a console handler that logs to the console
+        console_handler = logging.StreamHandler()
+        console_formatter = logging.Formatter('%(asctime)s - %(levelname)s - %(message)s')
+        console_handler.setFormatter(console_formatter)
+        logger.addHandler(console_handler)
     
     return logger
-
 
 
 class ColorFormatter(logging.Formatter):

@@ -441,6 +441,8 @@ def main ( ) :
             submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
         except:
             logger.error("Failed to submit job to cluster")
+        
+        
             logger.info("running the job locally ...")
             logger.info("Please go to the save_dir and run the mpprocess_script.sh file")
             logger.info("For example:")
