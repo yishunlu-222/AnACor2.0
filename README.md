@@ -11,20 +11,16 @@ AnACor2.0: A GPU-accelerated open-source software package for analytical absorpt
 - RAM: 16 GB or more
 - GPU: NVIDIA GPU with Pascal architecture (GTX 1000 series) or newer
 
-#### Package requirements
+#### Software requirements
 The following packages are required by AnACor2.0. All testing has used the following versions, but later versions should also work.
 
-	python_version >= 3.8
-	opencv-python>=4.6.0
-	scikit-image<=0.19.0
-	numba==0.59.0
-	imageio==2.33.1
-	scipy==1.10.1
-	numpy==1.24.4
-	PyYAML==6.0.1l
-	*GCC>=11.0
+	python >= 3.8
+	cuda >= 11.6
+	*gcc >= 11.0
+  
 Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
 *If your GCC is lower than 11, GSL for interpolation is incompatible with AnACor, so you can't use Gridding method.
+
 ## Installation
 
 #### How to install
@@ -37,13 +33,17 @@ python -m venv anacor
 # Not Recommended, just in case conda doesn't work
 # then you need to source /path/anacor/bin/activate to activate
 ```
-or install in your currnet environment
+Then install AnACor2.0:
 ```
 pip install --upgrade pip
 git clone https://github.com/yishunlu-222/AnACor2.0.git
 cd AnACor2.0; pip install -e .
 ```
-This Software is already installed in Beamline I23 Diamond Light Source. If you are working at I23, ```source /dls/science/groups/i23/yishun/dials_317/dials``` can activate AnACor2.0 .
+This Software is already installed in Beamline I23 Diamond Light Source. If you are working at I23, use following command:
+
+```
+source /dls/science/groups/i23/yishun/AnACor2.0/anacor2/bin/activate
+``` 
 
 #### PyTest
 You can run pytest to check if all modules are working properly in your machine by:
@@ -94,11 +94,15 @@ anacor.mp
 ```
 
 If you are running on **others or your local machine**, after running ```anacor.mp```, you will have error messages. Then you can go to the directory **XXX_save_data**, there is a bash file **mpprocess_script.sh**. You can edit this and change the configuration to run as a normal .bash file. For example:
+
+
 ```
 cd XXX_save_data
 chmod +x mpprocess_script.sh
 srun --nodes=1 --ntasks=1 --cpus-per-task=16 --mem=4G --gres=gpu:1 ./mpprocess_script.sh
 ```
+
+
 
 #### 3. Results and logs
 
@@ -112,7 +116,14 @@ https://drive.google.com/drive/folders/1wYZ3YONkAUyEGDyYYMkNoh5IY-6IghNx?usp=sha
 
 Due to the size of tomography images dataset, it only contains the Dials reflection and experiment files with its 3D segmented model, where the [Preprocessing](#1-preprocessing) is done for you.
 
-Therefore you can go straight to run [Scaling](#2-scaling) after `anacor.init`. With assigning the data paths and these absorption coefficients below, the I/sigma and R factors improve a lot compared to the spherical harmonics correction used in Dials.
+Now you can download them and run it in DIALS with spherical harmonics correction to test the integrity of the data:
+
+```
+source /path/to/installation/directory/dials-dev/dials_env.sh
+dials.scale Thaumatin_test.expt Thaumatin_test.refl anomalous=True absorption_level=high
+```
+
+Then, you can go straight to run [Scaling](#2-scaling) after `anacor.init`. With assigning the data paths and these absorption coefficients below, the I/sigma and R factors improve a lot compared to the spherical harmonics correction used in Dials.
 
 | Sample    | Crystal | Liquor  | Loop    |
 |-----------|---------|---------|---------|

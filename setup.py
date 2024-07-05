@@ -20,7 +20,9 @@ class CustomBuild(build_ext):
         # import pdb
         # pdb.set_trace() 
         # Run the make command with the detected GPU model
-        subprocess.check_call(['make', f'SM={sm_number}'])
+        subprocess.check_call(['make', 'clean'])
+        subprocess.check_call(['make', 'cpu'])
+        subprocess.check_call(['make','gpu',f'SM={sm_number}'])
         # Return to the original directory
         os.chdir('../../')
         super().run()

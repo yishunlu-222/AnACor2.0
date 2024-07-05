@@ -436,9 +436,17 @@ def main ( ) :
         f.write("set +e \n")
         f.close( )
         """new slurm cluster command"""
-    
-        user, token = get_slurm_token()
-        submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
+        try:
+            user, token = get_slurm_token()
+            submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
+        except:
+            logger.error("Failed to submit job to cluster")
+            logger.info("running the job locally ...")
+            logger.info("Please go to the save_dir and run the mpprocess_script.sh file")
+            logger.info("For example:")
+            logger.info("cd {} && bash mpprocess_script.sh".format(save_dir))
+            
+            # result = subprocess.run( ["bash" , os.path.join( save_dir , "mpprocess_script.sh" )] , shell = True , stdout = subprocess.PIPE , stderr = subprocess.PIPE )
         
         """new slurm cluster command"""
 

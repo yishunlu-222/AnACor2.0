@@ -42,8 +42,9 @@ ANALYZE = FFT.exe
 
 all: clean sharedlibrary_cpu sharedlibrary_gpu sharedlibrary_interpolation
 debug: clean sharedlibrary_cpu_d sharedlibrary_gpu_d sharedlibrary_interpolation_d
-cpu: clean sharedlibrary_cpu
-gpu: clean sharedlibrary_gpu
+clean: clean
+cpu:  sharedlibrary_cpu
+gpu:  sharedlibrary_gpu
 grid: sharedlibrary_interpolation
 
 sharedlibrary_cpu: ray_tracing.o ray_tracing_basic.o bisection.o testkit.o Makefile
