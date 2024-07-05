@@ -380,7 +380,7 @@ def main ( ) :
         f.write( "store_dir={}\n".format(args.store_dir  ) )
         f.write( "logging_dir={}\n".format( os.path.join( save_dir , 'Logging' ) ) )
         f.write("set -e \n")
-        f.write( "echo 'AnACor is running....Please don't stop it'\n" )
+        f.write( "echo 'AnACor is running....Please do not stop it'\n" )
         f.write( "echo 'Please check the logs at {} '\n".format( os.path.join( save_dir , 'Logging' ) ) )
         f.write( f'nohup {sys.executable} -u  ${{py_file}}  --dataset ${{dataset}} '
                  '--loac ${loac} --liac ${liac} --crac ${crac}  --buac ${buac} --offset ${offset} '
@@ -391,6 +391,7 @@ def main ( ) :
                     ' --absorption-map ${absorption_map} --bisection ${bisection} --partial-illumination ${partial_illumination} '
                  ' > ${logging_dir}/running_details_${dataset}_${counter}.out\n' )
         f.write( "echo \"${dataset} is finished\" \n" )
+        f.write("echo 'It is ready for DIALS processing' \n")
         # f.write( "bash dialsprocess_script.sh \n" )
     # f.close( )
         
@@ -435,6 +436,7 @@ def main ( ) :
             f.write( "{} \n".format( args.mtz2sca_dependancy ) )
             f.write( "mtz2sca {}_merged_acsh.mtz   \n".format( dataset ) )
             f.write( "mtz2sca {}_merged_ac.mtz   \n".format( dataset ) )
+            f.write("echo 'dials processing is finished' \n")
         f.write("set +e \n")
         f.close( )
         """new slurm cluster command"""
