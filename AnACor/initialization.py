@@ -124,7 +124,7 @@ def main():
             'coefficient_orientation': 0,
             'coefficient_viewing': 0,
             'flat_field_name' : None ,
-            'coefficient_thresholding':'mean',
+            'coefficient_thresholding':'otsu',
             'dials_dependancy':'module load dials/latest' ,
             'full_reflection': False,
             'model_storepath':npy_file,
