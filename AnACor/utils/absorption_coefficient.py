@@ -26,7 +26,7 @@ np.seterr( divide = 'ignore' , invalid = 'ignore' )
 
 class AbsorptionCoefficient( object ) :
     def __init__ ( self , tomo_img_path , ModelFilename , auto_orientation , auto_viewing , logger , coe_li = 0 , coe_lo = 0 ,
-                   coe_cr = 0 , coe_bu = 0 , base = 'li' , crop = None ,padding=None, thresholding = 'mean' , angle = 0 , save_dir = "./" ,
+                   coe_cr = 0 , coe_bu = 0 , base = 'li' , crop = None ,padding=None, thresholding = 'otsu' , angle = 0 , save_dir = "./" ,
                    pixel_size = 0.3 ,
                    kernel_square = (15 , 15) , full = False , offset = 0 , v_flip = False , h_flip = False ,
                    ModelRotate = -90 , flat_fielded = None , *args ) :
@@ -1231,7 +1231,7 @@ class RunAbsorptionCoefficient( AbsorptionCoefficient ) :
                    coe_cr = 0 , coe_bu = 0 , base = 'li' ,
                    angle = 0 , save_dir = './' , pixel_size = 0.3 ,
                    kernel_square = (15 , 15) , full = False , offset = 0 , v_flip = False , h_flip = False ,
-                   ModelRotate = -90 , crop = None , padding=None,thresholding = 'triangle' , flat_fielded = None) :
+                   ModelRotate = -90 , crop = None , padding=None,thresholding = 'otsu' , flat_fielded = None) :
         super( ).__init__( tomo_img_path , ModelFilename , angle = angle , logger = logger , coe_li = coe_li , coe_lo = coe_lo ,
                            coe_cr = coe_cr , coe_bu = coe_bu , base = base ,
                            auto_viewing = auto_viewing , auto_orientation = auto_orientation ,

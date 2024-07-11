@@ -43,7 +43,7 @@ def set_parser_init():
 def set_parser():
 
     parser = argparse.ArgumentParser(prog="AnACor" ,
-                                     description="AnACor is an accelerated absorption correction software for crystallography by written in Python, C and Cuda. It's currently built at the I23 beamline of Diamond Light Source.\n source link= https://github.com/yishunlu-222/AnACor_public \n documentation is on https://yishunlu-222.github.io/anacor.github.io/")
+                                     description="AnACor is an accelerated absorption correction software for crystallography by written in Python, C and CUDA. It's currently built at the I23 beamline of Diamond Light Source.\n source link= https://github.com/yishunlu-222/AnACor2.0 \n documentation is on https://yishunlu-222.github.io/anacor.github.io/")
 
     parser.add_argument(
         "--low",

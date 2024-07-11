@@ -128,6 +128,7 @@ def main():
             'dials_dependancy':'module load dials/latest' ,
             'full_reflection': False,
             'model_storepath':npy_file,
+            'abs_base_cls': 'li',
 
         }
         # Dump the dictionary to a YAML string
