@@ -149,10 +149,9 @@ class AbsorptionCoefficient( object ) :
         """
         
         # mask1 = fill_the_labels( mask1 )
-        if self.yx_shift == [0,0]:
-            self.mask2 , self.yxshift = self.skimage_translation_matching( self.mask1 ,
-                                                                        self.mask2 )  # move mask2 to get mask1
-
+        self.mask2 , self.yxshift = self.skimage_translation_matching( self.mask1 ,
+                                                                       self.mask2 )  # move mask2 to get mask1
+        self.logger.info( 'yxshift is {}'.format( self.yxshift ) )
         # in the projection of 3D tomography, the image axes are z of 3D (y in image) and x of 3D (x in image)
         # imagemask_overlapping( img1 , mask2 )
         # these absorption coefficients may be iteratively updated
