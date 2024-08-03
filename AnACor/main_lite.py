@@ -56,7 +56,7 @@ def main():
     gridding_dir = os.path.join(save_dir, 'ResultData', 'gridding')
     logging_dir = os.path.join(save_dir, 'Logging')
     directories = [save_dir, gridding_dir, result_path, logging_dir]
-    logger = setup_logger(os.path.join(save_dir,'Logging' ,'running.log'))
+    logger = setup_logger(os.path.join(save_dir,'Logging' ,'running_general.log'))
     for directory in directories:
         create_directory(directory)
 

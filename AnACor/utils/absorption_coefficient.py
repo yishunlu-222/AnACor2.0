@@ -29,7 +29,7 @@ class AbsorptionCoefficient( object ) :
                    coe_cr = 0 , coe_bu = 0 , base = 'li' , crop = None ,padding=None, thresholding = 'otsu' , angle = 0 , save_dir = "./" ,
                    pixel_size = 0.3 ,
                    kernel_square = (15 , 15) , full = False , offset = 0 , v_flip = False , h_flip = False ,
-                   ModelRotate = -90 , flat_fielded = None , *args ) :
+                   ModelRotate = -90 , flat_fielded = None ,yx_shift=[0,0], *args ) :
         """
 
         :param tomo_img_path:
@@ -70,6 +70,7 @@ class AbsorptionCoefficient( object ) :
         self.flat_fielded = flat_fielded
         print("first attempted loading...")
         self.img_loading(self.angle , flat_fielded = flat_fielded )
+        self.yx_shift=yx_shift
         # current the first image is where the gonionmeter is 0
         if self.auto_orientation or self.auto_viewing is True :
             
@@ -148,8 +149,9 @@ class AbsorptionCoefficient( object ) :
         """
         
         # mask1 = fill_the_labels( mask1 )
-        self.mask2 , self.yxshift = self.skimage_translation_matching( self.mask1 ,
-                                                                       self.mask2 )  # move mask2 to get mask1
+        if self.yx_shift == [0,0]:
+            self.mask2 , self.yxshift = self.skimage_translation_matching( self.mask1 ,
+                                                                        self.mask2 )  # move mask2 to get mask1
 
         # in the projection of 3D tomography, the image axes are z of 3D (y in image) and x of 3D (x in image)
         # imagemask_overlapping( img1 , mask2 )
@@ -548,6 +550,7 @@ class AbsorptionCoefficient( object ) :
                                     (1 - proportion_cut) ) : , :] = 0
 
                 # shift the mask_label to match candidate_mask to plot it
+                
                 shifted_mask , xyshift = self.skimage_translation_matching(
                     candidate_mask , mask_label )
                 # if plot:
@@ -1231,7 +1234,7 @@ class RunAbsorptionCoefficient( AbsorptionCoefficient ) :
                    coe_cr = 0 , coe_bu = 0 , base = 'li' ,
                    angle = 0 , save_dir = './' , pixel_size = 0.3 ,
                    kernel_square = (15 , 15) , full = False , offset = 0 , v_flip = False , h_flip = False ,
-                   ModelRotate = -90 , crop = None , padding=None,thresholding = 'otsu' , flat_fielded = None) :
+                   ModelRotate = -90 , crop = None , padding=None,thresholding = 'otsu' , flat_fielded = None,yx_shift=[0,0]) :
         super( ).__init__( tomo_img_path , ModelFilename , angle = angle , logger = logger , coe_li = coe_li , coe_lo = coe_lo ,
                            coe_cr = coe_cr , coe_bu = coe_bu , base = base ,
                            auto_viewing = auto_viewing , auto_orientation = auto_orientation ,
@@ -1239,7 +1242,7 @@ class RunAbsorptionCoefficient( AbsorptionCoefficient ) :
                            kernel_square = kernel_square , full = full ,
                            offset = offset , v_flip = v_flip , h_flip = h_flip ,
                            ModelRotate = ModelRotate , crop = crop , thresholding = thresholding ,
-                           flat_fielded = flat_fielded , padding=padding)
+                           flat_fielded = flat_fielded , padding=padding,yx_shift=yx_shift)
         
     def run ( self , singlecls = False ) :
         # new = self.img_list.mean( axis = 1 )

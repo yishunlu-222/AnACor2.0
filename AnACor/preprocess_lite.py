@@ -264,6 +264,12 @@ def main ( ) :
             print(f"kernel square for morphological transformation is {args.kernel_square}")
         else:
             args.kernel_square = (5 , 5) 
+        if hasattr(args, 'yx_shift'):
+            
+            args.yx_shift = tuple(args.yx_shift)
+            print(f"kernel square for morphological transformation is {args.yx_shift}")
+        else:
+            args.kernel_square = [0,0]
         # pdb.set_trace()
         try:
             coefficient_model = RunAbsorptionCoefficient( args.rawimg_path , model_storepath ,
@@ -280,7 +286,7 @@ def main ( ) :
                                                       angle = coefficient_viewing ,
                                                       kernel_square = args.kernel_square ,
                                                       full = False , thresholding = args.coefficient_thresholding,
-                                                      flat_fielded=args.flat_field_name,base=args.abs_base_cls, crop=args.crop,padding=args.padding)
+                                                      flat_fielded=args.flat_field_name,base=args.abs_base_cls, crop=args.crop,padding=args.padding,yx_shift=args.yx_shift)
             coefficient_model.run( )
         except Exception as e:
             logger.error("The absorption coefficient calculation is failed")

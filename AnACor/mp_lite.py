@@ -111,8 +111,8 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
     }
     # store_dir=args.store_dir
     job_script = os.path.join(save_dir, "mpprocess_script.sh")
-    stdout_log = os.path.join(save_dir, "Logging/mp_lite_output.log")
-    stderr_log = os.path.join(save_dir, "Logging/mp_lite_error.log")
+    stdout_log = os.path.join(save_dir, "Logging/slurm_output.log")
+    stderr_log = os.path.join(save_dir, "Logging/slurm_error.log")
     makefile=os.path.join(os.path.dirname( os.path.abspath( __file__ )),'src') 
     job_params = {
             "job": {
@@ -140,7 +140,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                     export CUDA_HOME=/dls_sw/apps/cuda/12.4.0
                     export PATH=$CUDA_HOME/bin:$PATH
                     export PATH=/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
-                    cd {makefile}
+                    cd {makefile} SM=70
                     make 
                     chmod 755 {job_script}\n  
                     bash {job_script}""" # f"#!/bin/bash\n echo 'testing'"  cd {makefile}  make
@@ -391,7 +391,7 @@ def main ( ) :
                  ' --openmp ${openmp} --single-c ${single_c} '
                  ' --sampling-method ${sampling_method} --gpu ${gpu} --sampling-ratio ${sampling_ratio} '
                     ' --absorption-map ${absorption_map} --bisection ${bisection} --partial-illumination ${partial_illumination} '
-                 ' > ${logging_dir}/running_details_${dataset}_${counter}.out\n' )
+                 ' > ${logging_dir}/running_verbose_${dataset}_${counter}.out\n' )
         f.write( "echo \"${dataset} is finished\" \n" )
         f.write("echo 'It is ready for DIALS processing' \n")
         # f.write( "bash dialsprocess_script.sh \n" )

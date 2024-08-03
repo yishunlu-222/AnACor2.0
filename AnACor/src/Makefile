@@ -30,11 +30,11 @@ NVCC = $(CUDA_HOME)/bin/nvcc
 #   SM_ARCH = sm_70
 # endif
 SM_ARCH=sm_${SM}
-NVCCFLAGS = -O3 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -lineinfo
+NVCCFLAGS = -O3 -w -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -lineinfo
 NVCCFLAGS_D = -O0 -arch=$(SM_ARCH) --ptxas-options=-v -Xcompiler -Wextra -Xcompiler -fPIC -G -g
 
 # Compiler options
-GCC_OPTS = -O3 -fPIC -Wall -Wextra $(LDFLAGS) $(INC)
+GCC_OPTS = -O3 -w -fPIC -Wall -Wextra $(LDFLAGS) $(INC)
 GCC_OPTS_D = -O0 -fPIC -Wall -Wextra $(INC) $(LDFLAGS) -g
 GCC_OPTS_gridding = -O3 -fPIC -Wall -Wextra $(LDFLAGS) -L$(GSL_LIB) -I$(GSL_INCLUDE) -lgsl -lgslcblas -lm
 
