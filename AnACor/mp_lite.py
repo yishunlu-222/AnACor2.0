@@ -2,6 +2,8 @@ import argparse
 import subprocess
 import json
 import os
+import sys
+import stat
 import pdb
 import yaml
 import sys
@@ -114,6 +116,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
     stdout_log = os.path.join(save_dir, "Logging/slurm_output.log")
     stderr_log = os.path.join(save_dir, "Logging/slurm_error.log")
     makefile=os.path.join(os.path.dirname( os.path.abspath( __file__ )),'src') 
+    configure_pth=os.path.join(os.path.dirname( os.path.abspath( __file__ )),'configure.py')
     job_params = {
             "job": {
                 "name": f"AnACor_{dataset}",
@@ -140,10 +143,12 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                     export CUDA_HOME=/dls_sw/apps/cuda/12.4.0
                     export PATH=$CUDA_HOME/bin:$PATH
                     export PATH=/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
-                    cd {makefile} SM=70
-                    make 
+
                     chmod 755 {job_script}\n  
                     bash {job_script}""" # f"#!/bin/bash\n echo 'testing'"  cd {makefile}  make
+                    #                     cd {makefile} SM=70
+                    # make 
+                    # python {configure_pth}
             
         }
 
@@ -272,8 +277,10 @@ def main ( ) :
         model_storepath = args.model_storepath
         
 
-        
+    expt_path= args.expt_path  
+    refl_path= args.refl_path
     for file in os.listdir( save_dir ) :
+        
         if '.json' in file :
             if args.full_reflection:
                 if 'expt' in file and 'True' in file :
@@ -285,13 +292,15 @@ def main ( ) :
                     expt_path = os.path.join( save_dir , file )
                 if 'refl' in file:
                     refl_path = os.path.join( save_dir , file )
-        else:
-            expt_path= args.expt_path 
-            refl_path= args.refl_path
+            
+
     py_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'main_lite.py' )
+    config_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'configure.py' )
     logger = setup_logger(os.path.join(save_dir,'Logging' ,'mpprocess.log'))
-    
+  
     if detect_file_type(expt_path) != "JSON" or detect_file_type(refl_path) != "JSON":
+        
+
         preprocess_dial_lite( args , save_dir,logger )
         for file in os.listdir( save_dir ) :
             if '.json' in file :
@@ -379,12 +388,13 @@ def main ( ) :
             f.write( "expt_pth={}\n".format( args.expt_path ) )
         f.write( "store_dir={}\n".format(args.store_dir  ) )
         f.write( "logging_dir={}\n".format( os.path.join( save_dir , 'Logging' ) ) )
-        f.write("set -e \n")
+        # f.write("set -e \n")
         f.write( "echo '===================================================='\n" )
         f.write( "echo '=====AnACor is running....Please do not stop it====='\n" )
         f.write( "echo '===================================================='\n" )
         f.write( "echo 'Please check the logfiles running_details_anacor_.out at {} '\n".format( os.path.join( save_dir , 'Logging' ) ) )
-        f.write( f'nohup {sys.executable} -u  ${{py_file}}  --dataset ${{dataset}} '
+        # f.write(f'''{sys.executable} -u {config_pth} \n''')
+        f.write( f' nohup {sys.executable} -u  ${{py_file}}  --dataset ${{dataset}} '
                  '--loac ${loac} --liac ${liac} --crac ${crac}  --buac ${buac} --offset ${offset} '
                  ' --store-dir ${store_dir} --refl-path ${refl_pth} --expt-path ${expt_pth}  '
                  '--model-storepath ${model_storepath} --full-iteration ${full_iter} --num-workers ${num}  '
@@ -407,6 +417,7 @@ def main ( ) :
             dials_save_name = 'anacor_{}.refl'.format( dataset )
             stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils','stacking.py' )
             intoflexpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'into_flex.py' )
+            f.write( "source /etc/profile.d/modules.sh \n" )
             f.write( "{}\n".format( args.dials_dependancy ) )
             f.write( "\n" )
             f.write(
@@ -439,20 +450,21 @@ def main ( ) :
             f.write( "mtz2sca {}_merged_acsh.mtz   \n".format( dataset ) )
             f.write( "mtz2sca {}_merged_ac.mtz   \n".format( dataset ) )
             f.write("echo 'dials processing is finished' \n")
-        f.write("set +e \n")
+        # f.write("set +e \n")
         f.close( )
         """new slurm cluster command"""
-        try:
-            user, token = get_slurm_token()
-            submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
-        except:
-            logger.error("Failed to submit job to cluster")
-        
-        
-            logger.info("running the job locally ...")
-            logger.info("Please go to the save_dir and run the mpprocess_script.sh file")
-            logger.info("For example:")
-            logger.info("cd {} && bash mpprocess_script.sh".format(save_dir))
+    os.chmod( os.path.join( save_dir , "mpprocess_script.sh" ), stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
+    try:
+        user, token = get_slurm_token()
+        submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
+    except:
+        logger.error("Failed to submit job to cluster")
+    
+    
+        logger.info("running the job locally ...")
+        logger.info("Please go to the save_dir and run the mpprocess_script.sh file")
+        logger.info("For example:")
+        logger.info("cd {} && bash mpprocess_script.sh".format(save_dir))
             
             # result = subprocess.run( ["bash" , os.path.join( save_dir , "mpprocess_script.sh" )] , shell = True , stdout = subprocess.PIPE , stderr = subprocess.PIPE )
         

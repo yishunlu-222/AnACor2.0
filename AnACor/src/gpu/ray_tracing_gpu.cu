@@ -2219,10 +2219,16 @@ int ray_tracing_gpu_overall_kernel(size_t low, size_t up,
 		// last_chunk_size = h_len_result - (n_chunks - 1) * chunk_size;
 		size_t unallocated_memory = free_mem - memory_required_bytes_3dmodel;
 		n_chunks = (total_memory_required_bytes + unallocated_memory - 1) / unallocated_memory;
+		
 		chunk_size = h_len_result / n_chunks;
 		last_chunk_size = h_len_result - (n_chunks ) * chunk_size;
-		n_chunks +=1;
-		printf(" Not enough memory! Input data is splitted into %d equal chunks with each of %d.\n", n_chunks, chunk_size);
+		if (last_chunk_size == 0)
+		{}
+		else
+		{
+		n_chunks = n_chunks + 1;
+		}
+		printf(" Not enough memory! Input data is splitted into %d equal chunks with each of %d and the last is %d.\n", n_chunks, chunk_size,last_chunk_size);
 	}
 	else
 	{
@@ -2234,8 +2240,16 @@ int ray_tracing_gpu_overall_kernel(size_t low, size_t up,
 	{
 		int index = chunk * chunk_size;
 		if (chunk == n_chunks - 1)
-		{
-			chunk_size = last_chunk_size;
+		{  
+			if (last_chunk_size == 0)
+			{
+				
+			}
+			else
+			{
+				chunk_size = last_chunk_size;
+			}
+		
 		}
 		size_t result_size = chunk_size * h_len_coord_list * 2 * sizeof(float);
 		size_t python_result_size = chunk_size * sizeof(float); // my desktop doesnt have enough memory to store the whole result list, so take a half of it to test
@@ -2255,7 +2269,7 @@ int ray_tracing_gpu_overall_kernel(size_t low, size_t up,
 		float *chunk_omega_list = (float *)((char *)omega_list + index * sizeof(float));
 		float *chunk_h_python_overall_result_list = (float *)((char *)h_python_overall_result_list + index * sizeof(float));
 
-		printf("chunk index: [%d/%d],result_size: %ld Mb\n", chunk, n_chunks, result_size / sizeof(float) / 1024 / 1024);
+		printf("chunk index: [%d/%d],result_size: %ld Mb\n", chunk+1, n_chunks, result_size / sizeof(float) / 1024 / 1024);
 		ray_tracing_gpu_single(rotated_s1_size, rotated_xray_size, chunk_size, h_x_max, h_y_max, h_z_max, h_diagonal, h_len_coord_list, coefficients, voxel_size, result_size, python_result_size, scattering_vector_list_size, omega_list_size, raw_xray_size, omega_axis_size, kp_rotation_matrix_size, coord_list_size, cube_size, face_size, angle_size, angle_size_overall, increments_size, increments_size_overall, chunk_scattering_vector_list, chunk_omega_list, raw_xray, omega_axis, kp_rotation_matrix, coord_list, label_list_1d, chunk_h_python_overall_result_list, gpumethod);
 	}
 	// h_python_overall_result_list = h_python_result_list;

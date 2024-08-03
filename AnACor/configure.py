@@ -136,7 +136,7 @@ def get_gpu_model():
 def configure():
     gpu_model, sm_number = get_gpu_model()
     if not gpu_model:
-        raise RuntimeError("Failed to detect GPU model")
+        raise RuntimeError("Failed to detect GPU model, please use CPU version of AnACor")
     print(f"GPU model {gpu_model} is found, compiling CUDA based on this Type with SM {sm_number}")
     if not sm_number:
         raise RuntimeError(f"SM number for GPU model {gpu_model} not found")
