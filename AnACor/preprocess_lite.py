@@ -269,7 +269,7 @@ def main ( ) :
             args.yx_shift = tuple(args.yx_shift)
             print(f"kernel square for morphological transformation is {args.yx_shift}")
         else:
-            args.kernel_square = [0,0]
+            args.yx_shift = [0,0]
         # pdb.set_trace()
         try:
             coefficient_model = RunAbsorptionCoefficient( args.rawimg_path , model_storepath ,
