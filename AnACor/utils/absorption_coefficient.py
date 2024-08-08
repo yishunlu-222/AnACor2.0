@@ -1,4 +1,6 @@
 import cv2
+import matplotlib
+# matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 import numpy as np
 import pdb
@@ -129,21 +131,31 @@ class AbsorptionCoefficient( object ) :
         # try_all_threshold(self.img1)
         # plt.show()
 
-        if self.thresholding == 'triangle' :
-            thresh = threshold_triangle( self.img1 )
-        elif self.thresholding == 'li' :
-            thresh = threshold_li( self.img1 )
-        elif self.thresholding == 'mean' :
-            thresh = threshold_mean( self.img1 )
-        elif self.thresholding == 'minimum' :
-            thresh = threshold_minimum( self.img1 )
-        elif self.thresholding == 'otsu' :
-            thresh = threshold_otsu( self.img1 )
-        elif self.thresholding == 'yen' :
-            thresh = threshold_yen( self.img1 )
-        elif self.thresholding == 'isodata' :
-            thresh = threshold_isodata( self.img1 )
-
+        # if self.thresholding == 'triangle' :
+        #     thresh = threshold_triangle( self.img1 )
+        # elif self.thresholding == 'li' :
+        #     thresh = threshold_li( self.img1 )
+        # elif self.thresholding == 'mean' :
+        #     thresh = threshold_mean( self.img1 )
+        # elif self.thresholding == 'minimum' :
+        #     thresh = threshold_minimum( self.img1 )
+        # elif self.thresholding == 'otsu' :
+        #     thresh = threshold_otsu( self.img1 )
+        # elif self.thresholding == 'yen' :
+        #     thresh = threshold_yen( self.img1 )
+        # elif self.thresholding == 'isodata' :
+        #     thresh = threshold_isodata( self.img1 )
+        # elif self.thresholding == 'auto' :
+        #     mask1_0 = self.mask_generation( self.img1 , thresh = threshold_triangle( self.img1 ) )
+        #     mask1_1 = self.mask_generation( self.img1 , thresh = threshold_li( self.img1 ) )
+        #     mask1_2 = self.mask_generation( self.img1 , thresh = threshold_mean( self.img1 ) )
+        #     mask1_3 = self.mask_generation( self.img1 , thresh = threshold_minimum( self.img1 ) )
+        #     mask1_4 = self.mask_generation( self.img1 , thresh = threshold_otsu( self.img1 ) )
+        #     mask1_5 = self.mask_generation( self.img1 , thresh = threshold_yen( self.img1 ) )
+        #     mask1_6 = self.mask_generation( self.img1 , thresh = threshold_isodata( self.img1 ) )
+            
+            
+        thresh = self.thresholding_method( )( self.img1 )
         self.mask1 = self.mask_generation( self.img1 , thresh = thresh )
         """ image processing: extract the overall boundary of the raw image and the projection of the 3D model
         """
@@ -290,6 +302,29 @@ class AbsorptionCoefficient( object ) :
         # plt.imshow( region + region_back )
         # plt.title( ' area of {} with acceptance percentage of {} '.format( cls , percent ) )
         return roi_cls
+
+    def image_overlapping_notplot( self , img1 , mask , title = 'Null',colour ='yellow'  ) :
+        img1, mask=self.same_shape(img1,mask)
+        try :
+            label = np.unique( mask )[1]
+        except :
+            label = 10
+        img1 = skimage.color.gray2rgb( img1 )
+
+        maskrgb = skimage.color.gray2rgb( mask )
+        if colour=='yellow':
+            maskrgb[mask == label] = np.array( [255 , 255 , 0] )
+        elif colour=='red':
+            maskrgb[mask == label] = np.array( [255 , 0 , 0] )
+        elif colour=='blue':
+            maskrgb[mask == label] = np.array( [0 , 0 , 255] )
+        elif colour=='cyan':
+            maskrgb[mask == label] = np.array( [0 , 255 , 255] )
+        # overaly = np.ubyte( img1 + 0.1 * maskrgb )
+        overaly = img1 + 0.3 * maskrgb
+        overaly[overaly > 255] = 255
+        overaly = np.ubyte( overaly )
+        return overaly
 
     def imagemask_overlapping ( self , img1 , mask , title = 'Null',colour ='yellow' ) :
 
@@ -464,23 +499,30 @@ class AbsorptionCoefficient( object ) :
 
         self.img = cv2.imread( file , 2 )
 
-    def thresholding_method ( self ) :
-        if self.thresholding == 'triangle' :
+    def thresholding_method ( self,method = None ) :
+        if method is not None:
+            thresholding = method
+        else:
+            thresholding = self.thresholding
+            
+            
+        if thresholding == 'triangle' :
             thresh_method = threshold_triangle
-        elif self.thresholding == 'li' :
+        elif thresholding == 'li' :
             thresh_method = threshold_li
-        elif self.thresholding == 'mean' :
+        elif thresholding == 'mean' :
             thresh_method = threshold_mean
-        elif self.thresholding == 'minimum' :
+        elif thresholding == 'minimum' :
             thresh_method = threshold_minimum
-        elif self.thresholding == 'otsu' :
+        elif thresholding == 'otsu' :
             thresh_method = threshold_otsu
-        elif self.thresholding == 'yen' :
+        elif thresholding == 'yen' :
             thresh_method = threshold_yen
-        elif self.thresholding == 'isodata' :
+        elif thresholding == 'isodata' :
             thresh_method = threshold_isodata
-        elif self.thresholding =='local':
+        elif thresholding =='local':
             thresh_method = threshold_local
+
         return thresh_method
 
     def cal_orientation_auto ( self ) :
@@ -537,7 +579,7 @@ class AbsorptionCoefficient( object ) :
                 candidate_img, mask_label = self.same_shape(candidate_img,mask_label)
                 if self.v_flip :
                     candidate_img = cv2.flip( candidate_img , 0 )
-                thresh = self.thresholding_method( )( candidate_img )
+                thresh = self.thresholding_method(method='mean')( candidate_img )
 
                 candidate_mask = self.mask_generation(candidate_img , thresh = thresh )
                 # pdb.set_trace( )    
@@ -824,16 +866,49 @@ class AbsorptionCoefficient( object ) :
         return img1,img2
     def differet_orientation ( self , angle  ) :
 
-       
+    
         candidate_img = cv2.normalize( self.img , None , 0 , 255 , cv2.NORM_MINMAX ).astype(
             'uint8' )
-        thresh = self.thresholding_method( )( candidate_img )
-        print('thresholding pixel value is {0}, any values above {0} will be removed '.format(np.round(thresh,3)))
-        self.logger.info('thresholding pixel value is {0}, any values above {0} will be removed '.format(np.round(thresh,3)))
-        candidate_mask = self.mask_generation( candidate_img , thresh = thresh )
         img_label = 255 - \
                     cv2.normalize( self.modelproj , None , 0 , 255 , cv2.NORM_MINMAX ).astype( 'uint8' )
         mask_label = self.mask_generation( img_label , thresh = 255 )
+        
+        if self.thresholding == "auto" :
+            print("=====trying all thresholding methods=====")
+            self.logger.info("=====trying all thresholding methods=====")
+            thresholding_list=["triangle" , "li" , "mean" , "minimum" , "otsu" , "yen" , "isodata"] 
+            mini_diffs=10000
+            for method in thresholding_list:
+            
+                fig, ax = plt.subplots( 1 , 2 , figsize = (20 , 10) )
+                thresh = self.thresholding_method( method )( candidate_img )
+                candidate_mask = self.mask_generation( candidate_img , thresh = thresh )
+                shifted_mask , xyshift = self.skimage_translation_matching(
+                candidate_mask , mask_label )
+                difference = np.abs( candidate_mask - shifted_mask ).mean( )
+                if difference < mini_diffs:
+                    mini_diffs=difference
+                    self.thresholding=method
+                
+                print(f"thresholding method: {method}, alignment difference: {difference}")
+                self.logger.info(f"thresholding method: {method}, alignment difference: {difference}")
+                label=self.image_overlapping_notplot( candidate_img , shifted_mask ,colour="cyan" )
+                thresholded_img=self.image_overlapping_notplot( candidate_img , candidate_mask  )
+                ax[1].imshow( label )
+                ax[1].set_title( "3d model projection with alignment difference of".format( difference ) )
+                ax[0].imshow( thresholded_img )
+                ax[0].set_title( "thresholding method: {} in {} degree".format( method, angle ) )
+                plt.savefig( "{}/thresholding_{}_{}_degree.png".format( self.save_dir ,method, angle ) )
+            
+            print(f"=====the best thresholding method is {self.thresholding} with alignment difference of {mini_diffs}=====")
+            self.logger.info(f"=====the best thresholding method is {self.thresholding} with alignment difference of {mini_diffs}=====")
+    
+        thresh = self.thresholding_method( )( candidate_img )
+        print("thresholding pixel value is {0}, any values above {0} will be removed ".format(np.round(thresh,3)))
+        self.logger.info("thresholding pixel value is {0}, any values above {0} will be removed ".format(np.round(thresh,3)))
+        candidate_mask = self.mask_generation( candidate_img , thresh = thresh )
+
+
         shifted_mask , xyshift = self.skimage_translation_matching(
             candidate_mask , mask_label )
         # 
@@ -1218,7 +1293,7 @@ class AbsorptionCoefficient( object ) :
 
     def skimage_translation_matching ( self , img , mask1 ) :
         # https://scikit-image.org/docs/stable/auto_examples/registration/plot_register_translation.html
-        # Manuel Guizar-Sicairos, Samuel T. Thurman, and James R. Fienup, “Efficient subpixel image registration algorithms,” Optics Letters 33, 156-158 (2008). DOI:10.1364/OL.33.000156
+        # Manuel Guizar-Sicairos, Samuel T. Thurman, and James R. Fienup, ¡°Efficient subpixel image registration algorithms,¡± Optics Letters 33, 156-158 (2008). DOI:10.1364/OL.33.000156
 
         from skimage.registration import phase_cross_correlation
         from skimage.registration._phase_cross_correlation import _upsampled_dft
