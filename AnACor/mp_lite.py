@@ -59,29 +59,38 @@ import json
 #     except subprocess.CalledProcessError as e :
 #         print( "Error: " , e )
 
+def set_yaml ( input_file ) :
+    parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+    with open( input_file , 'r' ) as f :
+        config = yaml.safe_load( f )
+    for key , value in config.items( ) :
+        parser.add_argument( '--{}'.format( key ) , default = value )
+
+    args = parser.parse_args( )
+
+    return args
+
 def set_parser ( input_file=None) :
-    if input_file is None:
-        parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
-        parser.add_argument(
-            "--input-file" ,
-            type = str ,
-            default='default_mpprocess_input.yaml',
-            help = "the path of the input file of all the flags" ,
-        )
 
-        directory = os.getcwd( )
-        global ar
-        ar = parser.parse_args( )
+    parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+    parser.add_argument(
+        "--input-file" ,
+        type = str ,
+        default='default_mpprocess_input.yaml',
+        help = "the path of the input file of all the flags" ,
+    )
 
-        try:
-            with open( ar.input_file , 'r' ) as f :
-                config = yaml.safe_load( f )
-        except:
-            with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
-                config = yaml.safe_load( f )
-    else:
-        with open( input_file , 'r' ) as f :
+    directory = os.getcwd( )
+    global ar
+    ar = parser.parse_args( )
+
+    try:
+        with open( ar.input_file , 'r' ) as f :
             config = yaml.safe_load( f )
+    except:
+        with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
+            config = yaml.safe_load( f )
+
             
     for key , value in config.items( ) :
         parser.add_argument( '--{}'.format( key ) , default = value )
@@ -176,7 +185,10 @@ def detect_file_type(file_path):
         return file_extension.lower()
 
 def main ( input_file=None) :
-    args = set_parser( input_file)
+    if input_file is None:
+        args = set_parser( )
+    else:
+        args = set_yaml(input_file)
 
     ### define the default values of some optional arguments  ###
     

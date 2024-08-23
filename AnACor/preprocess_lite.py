@@ -31,34 +31,42 @@ def str2bool ( v ) :
         raise argparse.ArgumentTypeError( 'Boolean value expected.' )
 
 
-def set_parser ( input_file=None) :
-    if input_file is None:
-        parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
-        parser.add_argument(
-            "--input-file" ,
-            type = str ,
-            default='default_mpprocess_input.yaml',
-            help = "the path of the input file of all the flags" ,
-        )
-
-        directory = os.getcwd( )
-        global ar
-        ar = parser.parse_args( )
-
-        try:
-            with open( ar.input_file , 'r' ) as f :
-                config = yaml.safe_load( f )
-        except:
-            with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
-                config = yaml.safe_load( f )
-    else:
-        with open( input_file , 'r' ) as f :
-            config = yaml.safe_load( f )
-            
+def set_yaml ( input_file ) :
+    parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+    with open( input_file , 'r' ) as f :
+        config = yaml.safe_load( f )
     for key , value in config.items( ) :
         parser.add_argument( '--{}'.format( key ) , default = value )
 
-    global args
+    args = parser.parse_args( )
+
+    return args
+
+def set_parser ( ) :
+
+    parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+    parser.add_argument(
+        "--input-file" ,
+        type = str ,
+        default='default_preprocess_input.yaml',
+        help = "the path of the input file of all the flags" ,
+    )
+
+    directory = os.getcwd( )
+    global ar
+    ar = parser.parse_args( )
+
+    try:
+        with open( ar.input_file , 'r' ) as f :
+            config = yaml.safe_load( f )
+    except:
+        with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
+            config = yaml.safe_load( f )
+
+    for key , value in config.items( ) :
+        parser.add_argument( '--{}'.format( key ) , default = value )
+
+
     args = parser.parse_args( )
 
     return args
@@ -84,7 +92,7 @@ def preprocess_dial_lite ( args , save_dir,logger ) :
         print("The reflection table is not found")
         return None
     import subprocess
-    logger.info( "\npreprocessing dials data.....\n" )
+    # logger.info( "\npreprocessing dials data.....\n" )
     print('preprocessing dials data.....')
     with open( os.path.join( save_dir , "preprocess_script.sh" ) , "w" ) as f :
         f.write( "#!/bin/bash \n" )
@@ -153,7 +161,11 @@ def create_save_dir ( args ) :
 
 # if __name__ == "__main__":
 def main (input_file=None):
-    args = set_parser(input_file )
+    if input_file is None:
+        args = set_parser( )
+    else:
+        args = set_yaml(input_file)
+    
     dataset = args.dataset
     save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
     result_path = os.path.join( save_dir , 'ResultData' )
