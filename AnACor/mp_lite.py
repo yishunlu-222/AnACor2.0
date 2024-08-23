@@ -59,43 +59,30 @@ import json
 #     except subprocess.CalledProcessError as e :
 #         print( "Error: " , e )
 
-def set_parser ( ) :
-    parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
-    parser.add_argument(
-        "--input-file" ,
-        type = str ,
-        default='default_mpprocess_input.yaml',
-        help = "the path of the input file of all the flags" ,
-    )
+def set_parser ( input_file=None) :
+    if input_file is None:
+        parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+        parser.add_argument(
+            "--input-file" ,
+            type = str ,
+            default='default_mpprocess_input.yaml',
+            help = "the path of the input file of all the flags" ,
+        )
 
-    directory = os.getcwd( )
-    global ar
-    ar = parser.parse_args( )
+        directory = os.getcwd( )
+        global ar
+        ar = parser.parse_args( )
 
-    try:
-        with open( ar.input_file , 'r' ) as f :
+        try:
+            with open( ar.input_file , 'r' ) as f :
+                config = yaml.safe_load( f )
+        except:
+            with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
+                config = yaml.safe_load( f )
+    else:
+        with open( input_file , 'r' ) as f :
             config = yaml.safe_load( f )
-    except:
-        with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
-            config = yaml.safe_load( f )
-
-
-    # # Add an argument for each key in the YAML file
-    # for key, value in config.items():
-    #     # Check if the key is "auto-sampling"
-    #     if key == "auto-sampling":
-    #         # If so, overwrite the default value with the value from the YAML file
-    #         parser.add_argument(
-    #             "--{}".format(key),
-    #             type=str2bool,
-    #             default=value,
-    #             help="pixel size of tomography",
-    #         )
-    #     else:
-    #         # Otherwise, use the default value from the add_argument method
-    #         parser.add_argument("--{}".format(key), default=value)
-
-    # Add an argument for each key in the YAML file
+            
     for key , value in config.items( ) :
         parser.add_argument( '--{}'.format( key ) , default = value )
 
@@ -188,8 +175,8 @@ def detect_file_type(file_path):
     else:
         return file_extension.lower()
 
-def main ( ) :
-    args = set_parser( )
+def main ( input_file=None) :
+    args = set_parser( input_file)
 
     ### define the default values of some optional arguments  ###
     
@@ -510,6 +497,8 @@ def main ( ) :
     
     # print( result.stderr.decode( ) )
 """old sge cluster command"""
+
+
 
 if __name__ == '__main__' :
     main( )

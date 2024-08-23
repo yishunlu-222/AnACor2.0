@@ -31,39 +31,35 @@ def str2bool ( v ) :
         raise argparse.ArgumentTypeError( 'Boolean value expected.' )
 
 
-def set_parser ( ) :
-    parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+def set_parser ( input_file=None) :
+    if input_file is None:
+        parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
+        parser.add_argument(
+            "--input-file" ,
+            type = str ,
+            default='default_mpprocess_input.yaml',
+            help = "the path of the input file of all the flags" ,
+        )
 
-    parser.add_argument(
-        "--input-file" ,
-        type = str ,
-        default='default_preprocess_input.yaml',
-        help = "the path of the input file of all the flags" ,
-    )
-    global ar
-    ar = parser.parse_args( )
-    directory = os.getcwd( )
-    # Load the YAML configuration file
-    try:
-        with open( ar.input_file , 'r' ) as f :
+        directory = os.getcwd( )
+        global ar
+        ar = parser.parse_args( )
+
+        try:
+            with open( ar.input_file , 'r' ) as f :
+                config = yaml.safe_load( f )
+        except:
+            with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
+                config = yaml.safe_load( f )
+    else:
+        with open( input_file , 'r' ) as f :
             config = yaml.safe_load( f )
-    except:
-        with open( os.path.join(directory,ar.input_file) , 'r' ) as f :
-            config = yaml.safe_load( f )
-    # Add an argument for each key in the YAML file
+            
     for key , value in config.items( ) :
         parser.add_argument( '--{}'.format( key ) , default = value )
 
     global args
     args = parser.parse_args( )
-
-    # if args.coefficient is True and args.rawimg_path is None :
-    #     parser.error( "If it calculates the absorption coefficient, "
-    #                   "the raw image path is needed" )
-    #
-    # if args.coefficient_auto is False and args.coefficient_viewing is None :
-    #     parser.error( "if the orientation of coefficient_auto is not automatically found"
-    #                   "then --coefficient-viewing is needed" )
 
     return args
 
@@ -156,8 +152,8 @@ def create_save_dir ( args ) :
 
 
 # if __name__ == "__main__":
-def main ( ) :
-    args = set_parser( )
+def main (input_file=None):
+    args = set_parser(input_file )
     dataset = args.dataset
     save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
     result_path = os.path.join( save_dir , 'ResultData' )
