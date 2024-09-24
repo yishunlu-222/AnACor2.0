@@ -17,9 +17,10 @@ The following packages are required by AnACor2.0. All testing has used the follo
 	python >= 3.8
 	cuda >= 11.6
 	*gcc >= 11.0
-  	gsl >= 2.7
+  	gsl >= 2.7 #GNU Scientific Library (GSL)
   
 Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed https://dials.github.io/installation.html. AnACor needs to combine DIALS to finish data-scaling.
+
 *If your GCC is lower than 11, GSL for interpolation is incompatible with AnACor, so you can't use Gridding method.
 
 ## Installation
