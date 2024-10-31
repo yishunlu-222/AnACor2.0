@@ -42,7 +42,10 @@ def create_directory(directory_path):
 
 
 def main():
-    configure()
+    try:
+        configure()
+    except:
+        pass
     global args
     args = set_parser()
     print("\n==========\n")

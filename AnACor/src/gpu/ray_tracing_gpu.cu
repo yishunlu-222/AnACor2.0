@@ -8,6 +8,7 @@
 #include <stdio.h>
 #include <cublas_v2.h>
 #include "helper_cuda.h"
+#include <stdint.h>
 #include "GPU_reduction.cuh"
 typedef float MyFloatType;
 #define DEBUG 0
@@ -2170,11 +2171,14 @@ int ray_tracing_gpu_overall_kernel(size_t low, size_t up,
 	int n_chunks = 1;
 	int chunk_size = 0;
 	int last_chunk_size = 0;
-	int h_z_max = shape[0], h_y_max = shape[1], h_x_max = shape[2];
+	size_t h_z_max = shape[0], h_y_max = shape[1], h_x_max = shape[2];
 	// int64_t h_len_result_coord = (int64_t)h_len_result * (int64_t)h_len_coord_list;
-
+	printf("h_x_max: %zu\n", h_x_max);
+	printf("h_y_max: %zu\n", h_y_max);
+	printf("h_z_max: %zu\n", h_z_max);
+	printf("sizeof(int8_t): %zu\n", sizeof(int8_t));
 	int h_diagonal = h_x_max * sqrtf(3);
-	size_t cube_size = h_x_max * h_y_max * h_z_max * sizeof(int8_t);
+	int64_t cube_size = h_x_max * h_y_max * h_z_max * sizeof(int8_t);
 	size_t face_size = h_len_coord_list * 2 * sizeof(int);
 	// size_t absorption_size = h_len_coord_list * 2 * sizeof(float);
 	size_t angle_size = 4 * sizeof(float);
@@ -2198,10 +2202,23 @@ int ray_tracing_gpu_overall_kernel(size_t low, size_t up,
 	size_t increments_size_overall = 36 * sizeof(float) * h_len_result;
 	printf("len_coord_list %d \n", h_len_coord_list);
 	printf("h_len_result %d \n", h_len_result);
+	printf("face_size: %zu bytes\n", face_size);
 
 	size_t total_memory_required_bytes = increments_size_overall + angle_size_overall + face_size + angle_size + increments_size + cube_size + coord_list_size + ray_directions_size + result_size + scattering_vector_list_size + omega_list_size + raw_xray_size + omega_axis_size + kp_rotation_matrix_size + rotated_s1_size + rotated_xray_size;
 
+	printf("len_coord_list %d \n", h_len_coord_list);
+	printf("h_len_result %d \n", h_len_result);
+	printf("face_size: %zu bytes\n", face_size);
+	printf("angle_size: %zu bytes\n", angle_size);
+	printf("increments_size: %zu bytes\n", increments_size);
+	printf("cube_size: %d bytes\n", cube_size);
+	printf("coord_list_size: %zu bytes\n", coord_list_size);
+	printf("ray_directions_size: %zu bytes\n", ray_directions_size);
+	printf("raw_xray_size: %zu bytes\n", raw_xray_size);
+	printf("omega_axis_size: %zu bytes\n", omega_axis_size);
+	printf("kp_rotation_matrix_size: %zu bytes\n", kp_rotation_matrix_size);
 	size_t memory_required_bytes_3dmodel = face_size + angle_size + increments_size + cube_size + coord_list_size + ray_directions_size + raw_xray_size + omega_axis_size + kp_rotation_matrix_size;
+
 
 	// printf("total_memory_required_bytes %f \n", total_memory_required_bytes);
 	printf("--> DEBUG: Total memory required %0.3f MB.\n", (double)total_memory_required_bytes / (1024.0 * 1024.0));
