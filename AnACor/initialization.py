@@ -112,7 +112,7 @@ def main():
     if args.pre:
         pre_data = {
             'store_dir': directory,
-            'dataset': 'test',
+            'dataset': 'anacor',
             'segimg_path' : dirs_3D,
             'rawimg-path':dirs_flat_fielded,
             'refl-path':refl_file,
@@ -125,10 +125,12 @@ def main():
             'coefficient_viewing': 0,
             'flat_field_name' : None ,
             'coefficient_thresholding':'auto',
+            'abs_base_cls': 'li',
+            'model_storepath':npy_file,
             'dials_dependancy':'module load dials/latest' ,
             'full_reflection': False,
-            'model_storepath':npy_file,
-            'abs_base_cls': 'li',
+            'GUIselectFiles': False,
+            
 
         }
         # Dump the dictionary to a YAML string
@@ -180,6 +182,7 @@ def main():
             'with_scaling' : True ,
             'anomalous':True,
             'gpu':True,
+            'multidataset':False,
             'mtz2sca_dependancy' : 'module load ccp4' ,
         }
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :

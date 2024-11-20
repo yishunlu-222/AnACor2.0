@@ -4,6 +4,8 @@ import yaml
 import pdb
 import numpy as np
 import sys
+import re
+
 parent_dir =os.path.dirname( os.path.abspath(__file__))
 sys.path.append(parent_dir)
 
@@ -13,12 +15,25 @@ import argparse
 try:
     from AnACor.utils.image_process import Image2Model
     from AnACor.utils.absorption_coefficient import RunAbsorptionCoefficient
+    from AnACor.utils.gui import *
 except:
         from utils.image_process import Image2Model
         from utils.absorption_coefficient import RunAbsorptionCoefficient
+        from utils.gui import *
 
 
-
+def detect_refl_expt_files(path):
+    refl_files = []
+    expt_files = []
+    for root, dirs, files in os.walk(path):
+        for file in files:
+            if 'scaled' in file:
+                continue
+            if file.endswith(".refl"):
+                refl_files.append(os.path.join(root, file))
+            elif file.endswith(".expt"):
+                expt_files.append(os.path.join(root, file))
+    return refl_files, expt_files
 
 def str2bool ( v ) :
     if isinstance( v , bool ) :
@@ -80,14 +95,14 @@ def set_parser ( ) :
 # else:
 #     print("arg a is not entered")
 
-def preprocess_dial_lite ( args , save_dir,logger ) :
+def preprocess_dial_lite ( args,refl_path ,expt_path, save_dir,dataset,logger ) :
     # from dials.util.filter_reflections import *
     
-    if os.path.isfile(args.expt_path) is False:
+    if os.path.isfile(expt_path) is False:
         logger.error("The experiment file is not found")
         print("The experiment file is not found")
         return None
-    if os.path.isfile(args.refl_path) is False:
+    if os.path.isfile(refl_path) is False:
         logger.error("The reflection table is not found")
         print("The reflection table is not found")
         return None
@@ -97,10 +112,10 @@ def preprocess_dial_lite ( args , save_dir,logger ) :
     with open( os.path.join( save_dir , "preprocess_script.sh" ) , "w" ) as f :
         f.write( "#!/bin/bash \n" )
         
-        f.write( "expt_pth=\'{}\' \n".format( args.expt_path) )
-        f.write( "refl_pth=\'{}\' \n".format( args.refl_path ) )
+        f.write( "expt_pth=\'{}\' \n".format( expt_path) )
+        f.write( "refl_pth=\'{}\' \n".format( refl_path ) )
         f.write( "store_dir=\'{}\' \n".format( save_dir ) )
-        f.write( "dataset={} \n".format( args.dataset ) )
+        f.write( "dataset={} \n".format( dataset ) )
         f.write( "full={} \n".format( args.full_reflection ) )
         f.write( "{} \n".format( args.dials_dependancy ) )
         f.write( "dials.python {}  --dataset ${{dataset}} " 
@@ -136,8 +151,8 @@ def preprocess_dial ( reflections , reflection_path , save_dir , args ) :
     refls.as_file( path )
     return refls
 
-def create_save_dir ( args ) :
-    save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
+def create_save_dir ( save_dir ) :
+    # save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
     if os.path.exists( save_dir ) is False :
         os.makedirs( save_dir )
         os.makedirs( os.path.join( save_dir , "Logging" ) )
@@ -178,7 +193,7 @@ def main (input_file=None):
     #             "/data/2019/nr23571-5/processing/tomography/recon/13304/avizo/segmentation_labels_tiffs"
 
     # ModelGenerator = Image2Model(segimg_path , model_name ).run()
-    create_save_dir( args )
+    create_save_dir( save_dir )
     save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
     global logger
     logger = setup_logger( os.path.join( save_dir , "Logging" , 'preprocess.log') )
@@ -258,7 +273,7 @@ def main (input_file=None):
             pass
         else:
             args.abs_base_cls = 'li'
-        if hasattr(args, 'crop'):
+        if hasattr(args, 'crop'): # '20,:,:,:' in I23
             args.crop = list(args.crop)
         else:
             args.crop = None
@@ -278,6 +293,10 @@ def main (input_file=None):
             print(f"kernel square for morphological transformation is {args.yx_shift}")
         else:
             args.yx_shift = [0,0]
+        if hasattr(args, 'GUIselectFiles'):
+            args.GUIselectFiles = str2bool(args.GUIselectFiles)
+        else:
+            args.GUIselectFiles = False
         # pdb.set_trace()
         try:
             coefficient_model = RunAbsorptionCoefficient( args.rawimg_path , model_storepath ,
@@ -302,45 +321,96 @@ def main (input_file=None):
             raise RuntimeError("The absorption coefficient calculation is failed")
     
 
+    if args.GUIselectFiles:
+        selected_paths = select_multiple_folders()
+        print("The follwing files are selected")
+        for path in selected_paths:
+            print(path)
+        print('\n')
+        for path in selected_paths:
+            pattern = r'\d+p\d+_\d+'
+            dataset_ = re.findall(pattern, path)[0]
+            dataset_match = f"{dataset_}_save_data"
+            new_save_dir =os.path.dirname(save_dir)
+            new_save_dir = os.path.join(new_save_dir,dataset_match)
+            create_save_dir(new_save_dir)
+
+            new_logger = setup_logger(os.path.join(new_save_dir, "Logging", 'preprocess.log'))
+
+            new_refl_files, new_expt_files = detect_refl_expt_files(path)
+            assert len(new_refl_files) == 1, "Only one reflection file is allowed, but found {}".format(new_refl_files)
+            assert len(new_expt_files) == 1, "Only one experiment file is allowed, but found {}".format(new_expt_files)
+            new_refl_pth = os.path.join(new_save_dir, new_refl_files[0])
+            new_expt_pth = os.path.join(new_save_dir, new_expt_files[0])
+            new_logger.info(f"In path: {path}")
+            new_logger.info(f"Found Reflection files: {new_refl_pth}")
+            new_logger.info(f"Found Experiment files: {new_expt_pth}")            
+            preprocess_dial_lite(args, new_refl_pth ,new_expt_pth  , new_save_dir,dataset_match,new_logger )
+            new_yaml = os.path.join(new_save_dir, 'default_mpprocess_input.yaml')
+
+            with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
+                    old_config = yaml.safe_load( f3 )
+            mp_config = old_config.copy()
+            mp_config[ 'refl_path' ] = new_refl_pth
+            mp_config[ 'expt_path' ] = new_expt_pth
+            mp_config[ 'dataset' ] = dataset_match   
+            mp_config[ 'model_storepath' ] = model_storepath
+            try:
+                with open(os.path.join( result_path , "absorption_coefficient","median_coefficients_with_percentage.json" )) as f2:
+                    coe = json.load(f2)
+                
+                mp_config[ 'liac' ] =coe[2][2]
+                mp_config[ 'loac' ] =coe[3][2]
+                mp_config[ 'crac' ] =coe[4][2]
+                try:
+                    mp_config[ 'buac' ] =coe[5][2]
+                except:
+                    mp_config[ 'buac' ] =0
+                logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
+            except:
+                print("Failed to write absorption coefficients in the mp process input file")
+            with open( new_yaml , 'w' ) as file :
+                yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
+                print("The selected files are written in the default_preprocess_input.yaml file")
+     
+    else:
+        preprocess_dial_lite(args, args.refl_path ,args.expt_path  , save_dir,dataset,logger )
 
     
-    preprocess_dial_lite( args , save_dir,logger )
+        with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
+                mp_config = yaml.safe_load( f3 )
 
-  
-    with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
-            mp_config = yaml.safe_load( f3 )
+        mp_config[ 'refl_path' ] = args.refl_path
+        mp_config[ 'expt_path' ] = args.expt_path
+        mp_config[ 'dataset' ] = args.dataset      
+        mp_config[ 'model_storepath' ] = model_storepath
 
-    mp_config[ 'refl_path' ] = args.refl_path
-    mp_config[ 'expt_path' ] = args.expt_path
-    mp_config[ 'dataset' ] = args.dataset      
-    mp_config[ 'model_storepath' ] = model_storepath
+        # for file in os.listdir(save_dir):
+        #     if '.json' in file:
+        #         if 'expt' in file:
+        #             expt_filename=os.path.join(save_dir,file)
+        #         if 'refl' in file:
+        #             refl_filename = os.path.join(save_dir,file)
 
-    # for file in os.listdir(save_dir):
-    #     if '.json' in file:
-    #         if 'expt' in file:
-    #             expt_filename=os.path.join(save_dir,file)
-    #         if 'refl' in file:
-    #             refl_filename = os.path.join(save_dir,file)
+        # mp_config[ 'refl_path' ] = refl_filename
+        # mp_config[ 'expt_path' ] = expt_filename
 
-    # mp_config[ 'refl_path' ] = refl_filename
-    # mp_config[ 'expt_path' ] = expt_filename
-
-    try:
-        with open(os.path.join( result_path , "absorption_coefficient","median_coefficients_with_percentage.json" )) as f2:
-            coe = json.load(f2)
-        
-        mp_config[ 'liac' ] =coe[2][2]
-        mp_config[ 'loac' ] =coe[3][2]
-        mp_config[ 'crac' ] =coe[4][2]
         try:
-            mp_config[ 'buac' ] =coe[5][2]
+            with open(os.path.join( result_path , "absorption_coefficient","median_coefficients_with_percentage.json" )) as f2:
+                coe = json.load(f2)
+            
+            mp_config[ 'liac' ] =coe[2][2]
+            mp_config[ 'loac' ] =coe[3][2]
+            mp_config[ 'crac' ] =coe[4][2]
+            try:
+                mp_config[ 'buac' ] =coe[5][2]
+            except:
+                mp_config[ 'buac' ] =0
+            logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
         except:
-            mp_config[ 'buac' ] =0
-        logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
-    except:
-        pass
-    with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
-        yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
+            pass
+        with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
+            yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
 
 if __name__ == '__main__' :
     main( )
