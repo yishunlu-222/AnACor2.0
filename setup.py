@@ -72,9 +72,9 @@ setup(
     },
     install_requires=[
         'importlib-metadata; python_version >= "3.8"',
-        'opencv-python>=4.6.0',
-        'scikit-image<=0.19.0',
-        'scikit-learn<=1.3.2',
+        'opencv-python',
+        'scikit-image',
+        'scikit-learn',
         'numba',
         'imagecodecs',
         'PyYAML',
