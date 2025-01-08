@@ -119,7 +119,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                 "ntasks": 1,
                 "nodes": 1,
                 "cpus_per_task": num_cores,
-                "gres": "gpu:1",
+                "gres": "gpu:1:v100",
                 "partition": "cs05r",  # Adjust this as needed
                 "current_working_directory": save_dir,
                 "standard_input": "/dev/null",
@@ -255,7 +255,8 @@ def main ( input_file=None) :
         args.partial_illumination=False
 
     save_dir = os.path.join( args.store_dir , '{}_save_data'.format( args.dataset ) )
-    create_save_dir(args)
+   
+    create_save_dir(save_dir)
     if args.model_storepath == 'None' or len(args.model_storepath) < 2 :
         models_list = []
         for file in os.listdir( save_dir ) :
@@ -275,7 +276,7 @@ def main ( input_file=None) :
     else :
         model_storepath = args.model_storepath
         
-
+    
     expt_path= args.expt_path  
     refl_path= args.refl_path
     for file in os.listdir( save_dir ) :

@@ -408,7 +408,8 @@ def main (input_file=None):
                 mp_config[ 'buac' ] =0
             logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
         except:
-            pass
+            raise RuntimeError("Failed to write absorption coefficients in the mp process input file")
+        
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
             yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
 

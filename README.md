@@ -29,7 +29,7 @@ Before running AnACor2.0, please make sure DIALS (version >=3.16) is installed h
 
 You can either create a new environment 
 ```
-conda create --name anacor python==3.8 # Recommended
+conda create --name anacor # Recommended
 or
 python -m venv anacor
 # Not Recommended, just in case conda doesn't work

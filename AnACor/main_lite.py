@@ -44,6 +44,7 @@ def create_directory(directory_path):
 def main():
     try:
         configure()
+        print("configuration is done")
     except:
         pass
     global args
