@@ -63,7 +63,7 @@ def set_parser ( ) :
     parser.add_argument(
         "--input-file" ,
         type = str ,
-        default='default_preprocess_input.yaml',
+        default='./default_preprocess_input.yaml',
         help = "the path of the input file of all the flags" ,
     )
 
@@ -168,10 +168,9 @@ def create_save_dir ( save_dir ) :
 
     if os.path.exists( result_path ) is False :
         os.makedirs( os.path.join( save_dir , 'ResultData' ) )
-        os.makedirs( os.path.join( result_path , "reflections" ) )
         os.makedirs( os.path.join( result_path , "absorption_factors" ) )
         os.makedirs( os.path.join( result_path , "absorption_coefficient" ) )
-        os.makedirs( os.path.join( result_path , "dials_output" ) )
+        # os.makedirs( os.path.join( result_path , "dials_output" ) )
 
 
 # if __name__ == "__main__":
@@ -207,7 +206,6 @@ def main (input_file=None):
     # handler.setFormatter( formatter )
     # logger.addHandler( handler )
     logger.info( "\nResultData directory is created... \n")
-    print( "\nResultData directory is created... \n" )
     
     # this process can be passed in the future
 
@@ -230,8 +228,6 @@ def main (input_file=None):
             yaml.dump( pre_config , file, default_flow_style=False, sort_keys=False, indent=4)
 
     logger.info( "\n3D model file is already created... \n" )
-    print( "\n3D model file is already created... \n" )
-
     if args.cal_coefficient is True :
         
         if args.model_storepath is not None and args.model_storepath.isspace() is not True\

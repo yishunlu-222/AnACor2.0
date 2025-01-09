@@ -55,7 +55,7 @@ def main ( ) :
     save_dir = os.path.join(  args.store_dir, '{}_save_data'.format( dataset ) )
     result_path  =os.path.join(  save_dir,'ResultData','absorption_factors')
     refl_dir = os.path.join(  save_dir,'ResultData','reflections')
-    dials_dir = os.path.join( save_dir , 'ResultData' , 'dials_output' )
+    dials_dir = os.path.join( save_dir , 'ResultData')
 
 
     stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'stacking.py' )
@@ -68,7 +68,7 @@ def main ( ) :
         dataset = args.dataset
         save_dir = os.path.join( args.store_dir , '{}_save_data'.format( dataset ) )
         result_path = os.path.join( save_dir , 'ResultData' , 'absorption_factors' )
-        dials_dir = os.path.join( save_dir , 'ResultData' , 'dials_output' )
+        dials_dir = os.path.join( save_dir , 'ResultData')
         dials_save_name = 'anacor_{}.refl'.format( dataset )
         stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils','stacking.py' )
         intoflexpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'into_flex.py' )

@@ -72,7 +72,7 @@ setup(
     },
     install_requires=[
         'importlib-metadata; python_version >= "3.8"',
-        'opencv-python',
+        'opencv-python-headless',
         'scikit-image',
         'scikit-learn',
         'numba',

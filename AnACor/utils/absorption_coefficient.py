@@ -1579,9 +1579,16 @@ class RunAbsorptionCoefficient( AbsorptionCoefficient ) :
             output.append(  crac_mean_list )
             if number_cls == 5 :
                 output.append( buac_mean_list )
-            
+            data_converted = [
+                item if isinstance(item, list) and all(isinstance(subitem, str) for subitem in item)
+                else [float(subitem) if isinstance(subitem, np.float32) else subitem for subitem in item]
+                for item in output
+            ]
+        
             with open( os.path.join( self.save_dir , "mean_coefficients_with_percentage.json" ) , 'w' ) as f1 :
-                json.dump( output , f1 , indent = 2 )
+                json.dump( data_converted , f1 , indent = 2 )
+
+
 
             output = [order]
             output.append(name_list )
@@ -1590,9 +1597,13 @@ class RunAbsorptionCoefficient( AbsorptionCoefficient ) :
             output.append( crac_median_list)
             if number_cls == 5 :
                 output.append( buac_median_list )
-            # 
+            median_data_converted = [
+                item if isinstance(item, list) and all(isinstance(subitem, str) for subitem in item)
+                else [float(subitem) if isinstance(subitem, np.float32) else subitem for subitem in item]
+                for item in output
+            ]
             with open( os.path.join( self.save_dir , "median_coefficients_with_percentage.json" ) , 'w' ) as f1 :
-                json.dump( output , f1 , indent = 2 )
+                json.dump( median_data_converted , f1 , indent = 2 )
 
 def tablization ( dataset , centre = 0 , save_dir = './' ) :
     import pandas as pd

@@ -414,7 +414,7 @@ def main ( input_file=None) :
             dataset = args.dataset
             save_dir = os.path.join( args.store_dir , '{}_save_data'.format( dataset ) )
             result_path = os.path.join( save_dir , 'ResultData' , 'absorption_factors' )
-            dials_dir = os.path.join( save_dir , 'ResultData' , 'dials_output' )
+            dials_dir = os.path.join( save_dir , 'ResultData' )
             dials_save_name = 'anacor_{}.refl'.format( dataset )
             stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils','stacking.py' )
             intoflexpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'into_flex.py' )
@@ -460,12 +460,19 @@ def main ( input_file=None) :
         submit_job_slurm(args.hour, args.minute, args.second, args.num_cores, save_dir,logger=logger,dataset=args.dataset,user=user, token=token,args=args)
     except:
         logger.error("Failed to submit job to cluster")
-    
-    
         logger.info("running the job locally ...")
-        logger.info("Please go to the save_dir and run the mpprocess_script.sh file")
-        logger.info("For example:")
-        logger.info("cd {} && bash mpprocess_script.sh".format(save_dir))
+        try:
+            # Run the script
+            result = subprocess.run(["bash", os.path.join(save_dir,"mpprocess_script.sh")], check=True, text=True, capture_output=True)
+            # Print the script's output
+            print("Script output:\n", result.stdout)
+        except subprocess.CalledProcessError as e:
+            
+            print("Error occurred:\n", e.stderr)
+            print("Auto running failed")
+            logger.info("Please go to the save_dir and run the mpprocess_script.sh file")
+            logger.info("For example:")
+            logger.info("cd {} && bash mpprocess_script.sh".format(save_dir))
             
             # result = subprocess.run( ["bash" , os.path.join( save_dir , "mpprocess_script.sh" )] , shell = True , stdout = subprocess.PIPE , stderr = subprocess.PIPE )
         
