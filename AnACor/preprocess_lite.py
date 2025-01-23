@@ -22,18 +22,7 @@ except:
         from utils.gui import *
 
 
-def detect_refl_expt_files(path):
-    refl_files = []
-    expt_files = []
-    for root, dirs, files in os.walk(path):
-        for file in files:
-            if 'scaled' in file:
-                continue
-            if file.endswith(".refl"):
-                refl_files.append(os.path.join(root, file))
-            elif file.endswith(".expt"):
-                expt_files.append(os.path.join(root, file))
-    return refl_files, expt_files
+
 
 def str2bool ( v ) :
     if isinstance( v , bool ) :
@@ -100,11 +89,9 @@ def preprocess_dial_lite ( args,refl_path ,expt_path, save_dir,dataset,logger ) 
     
     if os.path.isfile(expt_path) is False:
         logger.error("The experiment file is not found")
-        print("The experiment file is not found")
         return None
     if os.path.isfile(refl_path) is False:
         logger.error("The reflection table is not found")
-        print("The reflection table is not found")
         return None
     import subprocess
     # logger.info( "\npreprocessing dials data.....\n" )
@@ -127,7 +114,7 @@ def preprocess_dial_lite ( args,refl_path ,expt_path, save_dir,dataset,logger ) 
     try :
         result = subprocess.run( ["bash" , os.path.join( save_dir , "preprocess_script.sh" )] , check = True ,
                                  capture_output = True )
-        print( result.stdout.decode( ) )
+        # print( result.stdout.decode( ) )
         logger.info( result.stdout.decode( ) )
     except subprocess.CalledProcessError as e :
         logger.error( "Error: " , e )
@@ -338,22 +325,26 @@ def main (input_file=None):
 
     
     if args.GUIselectFiles:
-        selected_paths = select_multiple_folders()
+        # selected_paths = select_multiple_folders()
+        
+        selected_paths=["/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p0_4/11e51352-2757-4efd-9c1d-bbe6112d0b03/","/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p5_1/43a5dd73-db37-46fd-8a20-31144e6cb956/","/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p5_4/70396634-b7ab-4d63-a37e-8c2af6219479/"]
         print("The follwing files are selected")
         for path in selected_paths:
             print(path)
         print('\n')
-        for path in selected_paths:
+        for i,path in enumerate(selected_paths):
+            
             pattern = r'\d+p\d+_\d+'
+            pdb.set_trace()
             dataset_ = re.findall(pattern, path)[0]
             dataset_match = f"{dataset_}_save_data"
+            # dataset_match= f"data_{i+1}"
             new_save_dir =os.path.dirname(save_dir)
             new_save_dir = os.path.join(new_save_dir,dataset_match)
             create_save_dir(new_save_dir)
-
+            
             new_logger = setup_logger(os.path.join(new_save_dir, "Logging", 'preprocess.log'))
-
-            new_refl_files, new_expt_files = detect_refl_expt_files(path)
+            new_refl_files, new_expt_files = find_reflexp(path)
             assert len(new_refl_files) == 1, "Only one reflection file is allowed, but found {}".format(new_refl_files)
             assert len(new_expt_files) == 1, "Only one experiment file is allowed, but found {}".format(new_expt_files)
             new_refl_pth = os.path.join(new_save_dir, new_refl_files[0])
@@ -362,7 +353,7 @@ def main (input_file=None):
             new_logger.info(f"Found Reflection files: {new_refl_pth}")
             new_logger.info(f"Found Experiment files: {new_expt_pth}")            
             preprocess_dial_lite(args, new_refl_pth ,new_expt_pth  , new_save_dir,dataset_match,new_logger )
-            new_yaml = os.path.join(new_save_dir, 'default_mpprocess_input.yaml')
+            new_yaml = os.path.join(new_save_dir, f'{dataset_match}_mpprocess_input.yaml')
 
             with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
                     old_config = yaml.safe_load( f3 )
@@ -381,7 +372,7 @@ def main (input_file=None):
             logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
             with open( new_yaml , 'w' ) as file :
                 yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
-                print("The selected files are written in the default_preprocess_input.yaml file")
+                print(f"input setting of {dataset_match} is finished")
      
     else:
         preprocess_dial_lite(args, args.refl_path ,args.expt_path  , save_dir,dataset,logger )
@@ -412,7 +403,7 @@ def main (input_file=None):
         
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
             yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
-
+            print("The selected files are written in the default_mpprocess_input.yaml file")
 if __name__ == '__main__' :
     main( )
 

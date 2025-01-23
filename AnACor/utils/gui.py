@@ -1,6 +1,22 @@
 import tkinter as tk
 from tkinter import filedialog, ttk
+import os
+import re
 
+
+def find_reflexp(root_directory):
+    refl_list=[]
+    exp_list=[]
+    for dirpath, dirnames, filenames in os.walk(root_directory):
+        for filename in filenames:
+            full_path = os.path.join(dirpath, filename)
+            if filename.endswith(".refl") and "scaled" not in filename:
+                # Build the full file path
+                
+                refl_list.append(full_path)
+            if filename.endswith(".expt") and "scaled" not in filename:
+                exp_list.append(full_path)
+    return refl_list,exp_list
 def select_multiple_folders():
     # Initialize the main window
     root = tk.Tk()
