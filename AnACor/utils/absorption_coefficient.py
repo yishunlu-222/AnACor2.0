@@ -1604,7 +1604,10 @@ class RunAbsorptionCoefficient( AbsorptionCoefficient ) :
             ]
             with open( os.path.join( self.save_dir , "median_coefficients_with_percentage.json" ) , 'w' ) as f1 :
                 json.dump( median_data_converted , f1 , indent = 2 )
-
+        if number_cls == 5 : 
+            return liac_median_list[2],loac_median_list[2],crac_median_list[2],buac_median_list[2]
+        else:
+            return liac_median_list[2],loac_median_list[2],crac_median_list[2],0
 def tablization ( dataset , centre = 0 , save_dir = './' ) :
     import pandas as pd
 

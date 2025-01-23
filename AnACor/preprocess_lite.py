@@ -226,7 +226,8 @@ def main (input_file=None):
 
         with open( './default_preprocess_input.yaml' , 'w' ) as file :
             yaml.dump( pre_config , file, default_flow_style=False, sort_keys=False, indent=4)
-
+            
+    coe_list=[0,0,0,0]
     logger.info( "\n3D model file is already created... \n" )
     if args.cal_coefficient is True :
         
@@ -310,13 +311,32 @@ def main (input_file=None):
                                                       kernel_square = args.kernel_square ,
                                                       full = False , thresholding = args.coefficient_thresholding,
                                                       flat_fielded=args.flat_field_name,base=args.abs_base_cls, crop=args.crop,padding=args.padding,yx_shift=args.yx_shift)
-            coefficient_model.run( )
+            coe_li,coe_lo,coe_cr,coe_bu=coefficient_model.run( )
+            coe_list = [coe_li,coe_lo,coe_cr,coe_bu]
         except Exception as e:
             logger.error("The absorption coefficient calculation is failed")
             logger.error(e)
             raise RuntimeError("The absorption coefficient calculation is failed")
-    
+    else:
+        if hasattr(args, 'coe_li'):
+            coe_list[0]=args.coe_li 
+        else:
+            logger.error("The absorption coefficient for Liquor is not defined, Please define it  in the input yaml as something like coe_li: 0.01")
+        if hasattr(args, 'coe_lo'):
+            coe_list[1]=args.coe_lo
+        else:
+            logger.error("The absorption coefficient for Loop is not defined, Please define it  in the input yaml as something like coe_lo: 0.01")
+        if hasattr(args, 'coe_cr'):
+            coe_list[2]=args.coe_cr
+        else:
+            logger.error("The absorption coefficient for Crystalline is not defined, Please define it  in the input yaml as something like coe_cr: 0.01")
+        if hasattr(args, 'coe_bu'):
+            coe_list[3]=args.coe_bu
+        else:
+            pass
 
+
+    
     if args.GUIselectFiles:
         selected_paths = select_multiple_folders()
         print("The follwing files are selected")
@@ -351,20 +371,14 @@ def main (input_file=None):
             mp_config[ 'expt_path' ] = new_expt_pth
             mp_config[ 'dataset' ] = dataset_match   
             mp_config[ 'model_storepath' ] = model_storepath
-            try:
-                with open(os.path.join( result_path , "absorption_coefficient","median_coefficients_with_percentage.json" )) as f2:
-                    coe = json.load(f2)
+        
+            mp_config[ 'liac' ] =coe_list[0]
+            mp_config[ 'loac' ] =coe_list[1]
+            mp_config[ 'crac' ] =coe_list[2]
+            mp_config[ 'buac' ] =coe_list[3]
+    
                 
-                mp_config[ 'liac' ] =coe[2][2]
-                mp_config[ 'loac' ] =coe[3][2]
-                mp_config[ 'crac' ] =coe[4][2]
-                try:
-                    mp_config[ 'buac' ] =coe[5][2]
-                except:
-                    mp_config[ 'buac' ] =0
-                logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
-            except:
-                print("Failed to write absorption coefficients in the mp process input file")
+            logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
             with open( new_yaml , 'w' ) as file :
                 yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
                 print("The selected files are written in the default_preprocess_input.yaml file")
@@ -391,20 +405,10 @@ def main (input_file=None):
         # mp_config[ 'refl_path' ] = refl_filename
         # mp_config[ 'expt_path' ] = expt_filename
 
-        try:
-            with open(os.path.join( result_path , "absorption_coefficient","median_coefficients_with_percentage.json" )) as f2:
-                coe = json.load(f2)
-            
-            mp_config[ 'liac' ] =coe[2][2]
-            mp_config[ 'loac' ] =coe[3][2]
-            mp_config[ 'crac' ] =coe[4][2]
-            try:
-                mp_config[ 'buac' ] =coe[5][2]
-            except:
-                mp_config[ 'buac' ] =0
-            logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
-        except:
-            raise RuntimeError("Failed to write absorption coefficients in the mp process input file")
+        mp_config[ 'liac' ] =coe_list[0]
+        mp_config[ 'loac' ] =coe_list[1]
+        mp_config[ 'crac' ] =coe_list[2]
+        mp_config[ 'buac' ] =coe_list[3]
         
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
             yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
