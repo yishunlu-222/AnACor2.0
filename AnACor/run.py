@@ -1,19 +1,42 @@
-
-from AnACor import preprocess_lite
-from AnACor import mp_lite
-import pdb
-import os
 import sys
-import inspect
+import os
+import preprocess_lite
+import mp_lite
+import pdb
+def main():
+    # Step 0: Run preprocess_lite and get all preprocessed paths
+    all_preprocessed_path = preprocess_lite.main()
 
-def run():
-    preprocess_lite.main()
-    #then here we have the gui
-    # select the dataset, and they will create the yaml file and the correspond log file 
-    # run mp_lite in a for loop
-    mp_lite.main()
-    
+    # Let the user check if all_preprocessed_path is correct
+    print("Here are the preprocessed paths:")
+    for path in all_preprocessed_path:
+        print(path)
 
-if __name__ == '__main__' :
-    main( )
+    user_input = input("Are these paths correct? (y/n): ")
+    if user_input.lower() not in ['y', 'yes', 'ok', 'sure']:
+        print("Exiting. Please verify the paths.")
+        return
 
+    pdb.set_trace()
+    for path in all_preprocessed_path:
+        print(f"Processing: {path}")
+
+        # Step 2: Set the new sys.path to the subpath of all_preprocessed_path
+        if os.path.isdir(path):
+            sys.path.insert(0, path)  # Add the path to sys.path
+
+            try:
+                # Step 3: Run mp_lite.main() for each path
+                mp_lite.main()
+            except Exception as e:
+                print(f"Error occurred while processing {path}: {e}")
+            finally:
+                # Remove the path from sys.path after processing
+                if path in sys.path:
+                    sys.path.remove(path)
+
+        else:
+            print(f"Skipping {path} as it is not a valid directory.")
+
+if __name__ == "__main__":
+    main()

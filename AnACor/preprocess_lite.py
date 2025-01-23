@@ -332,15 +332,17 @@ def main (input_file=None):
         for path in selected_paths:
             print(path)
         print('\n')
+        all_preprocessed_path=[]
         for i,path in enumerate(selected_paths):
             
             pattern = r'\d+p\d+_\d+'
-            pdb.set_trace()
+            
             dataset_ = re.findall(pattern, path)[0]
-            dataset_match = f"{dataset_}_save_data"
+            dataset_match = f"anacor_{dataset_}"
             # dataset_match= f"data_{i+1}"
             new_save_dir =os.path.dirname(save_dir)
             new_save_dir = os.path.join(new_save_dir,dataset_match)
+            all_preprocessed_path.append(new_save_dir)
             create_save_dir(new_save_dir)
             
             new_logger = setup_logger(os.path.join(new_save_dir, "Logging", 'preprocess.log'))
@@ -353,7 +355,7 @@ def main (input_file=None):
             new_logger.info(f"Found Reflection files: {new_refl_pth}")
             new_logger.info(f"Found Experiment files: {new_expt_pth}")            
             preprocess_dial_lite(args, new_refl_pth ,new_expt_pth  , new_save_dir,dataset_match,new_logger )
-            new_yaml = os.path.join(new_save_dir, f'{dataset_match}_mpprocess_input.yaml')
+            new_yaml = os.path.join(new_save_dir, 'default_mpprocess_input.yaml')
 
             with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
                     old_config = yaml.safe_load( f3 )
@@ -368,12 +370,11 @@ def main (input_file=None):
             mp_config[ 'crac' ] =coe_list[2]
             mp_config[ 'buac' ] =coe_list[3]
     
-                
-            logger.info( "\nAbsorption coefficients are written in the mp process input file... \n" )
+     
             with open( new_yaml , 'w' ) as file :
                 yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
                 print(f"input setting of {dataset_match} is finished")
-     
+        return all_preprocessed_path
     else:
         preprocess_dial_lite(args, args.refl_path ,args.expt_path  , save_dir,dataset,logger )
 
@@ -404,6 +405,7 @@ def main (input_file=None):
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
             yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
             print("The selected files are written in the default_mpprocess_input.yaml file")
+        return None
 if __name__ == '__main__' :
     main( )
 
