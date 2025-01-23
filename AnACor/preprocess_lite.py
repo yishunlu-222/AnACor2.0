@@ -374,7 +374,8 @@ def main (input_file=None):
             with open( new_yaml , 'w' ) as file :
                 yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
                 print(f"input setting of {dataset_match} is finished")
-        return all_preprocessed_path
+    
+        return selected_paths,all_preprocessed_path
     else:
         preprocess_dial_lite(args, args.refl_path ,args.expt_path  , save_dir,dataset,logger )
 

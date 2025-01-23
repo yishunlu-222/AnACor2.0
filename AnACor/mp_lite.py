@@ -267,7 +267,7 @@ def main ( input_file=None) :
             model_storepath = os.path.join( save_dir , models_list[0] )
         elif len( models_list ) == 0 :
             raise RuntimeError(
-                "\n There are no 3D models of sample {} in this directory \n  Please create one by command python setup.py \n".format(
+                "\n There are no 3D models of sample {} in this directory \n  Please create one by command anacor.preprocess \n".format(
                     args.dataset ) )
         else :
             raise RuntimeError(
