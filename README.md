@@ -33,9 +33,9 @@ conda create --name anacor # Recommended
 or
 python -m venv anacor
 # Not Recommended, just in case conda doesn't work
-# then you need to source /path/anacor/bin/activate to activate
+# then you need to source /path/anacor/bin/activate to activate before installing AnACor!!!
 ```
-Then install AnACor2.0:
+Then activate the enviroment and install AnACor2.0:
 ```
 pip install --upgrade pip
 git clone https://github.com/yishunlu-222/AnACor2.0.git

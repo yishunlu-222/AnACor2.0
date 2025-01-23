@@ -38,6 +38,7 @@ GPU_SM_MAPPING = {
     'tesla p4': '61',
     'discrete gpu': '61',
     'tegra tx2': '62',
+    'quadro p2000': '61',
     # Volta
     'dgx-1 with volta': '70',
     'tesla v100': '70',
