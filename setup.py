@@ -67,7 +67,7 @@ setup(
             'anacor.postprocess = AnACor.postprocess_lite:main',
             'anacor.init = AnACor.initialization:main',
             'anacor.configure = AnACor.configure:configure',
-            'anacor.run = AnACor.run:run',
+            'anacor.run = AnACor.run:main',
         ],
     },
     install_requires=[
