@@ -69,7 +69,7 @@ setup(
             'anacor.configure = AnACor.configure:configure',
             'anacor.run = AnACor.run:main',
         ],
-    },
+    }, 
     install_requires=[
         'importlib-metadata; python_version >= "3.8"',
         'opencv-python-headless',
