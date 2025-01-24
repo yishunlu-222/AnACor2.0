@@ -325,10 +325,10 @@ def main (input_file=None):
 
     
     if args.GUIselectFiles:
-        # selected_paths = select_multiple_folders()
+        selected_paths = select_multiple_folders()
         
-        selected_paths=["/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p0_4/11e51352-2757-4efd-9c1d-bbe6112d0b03/","/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p5_1/43a5dd73-db37-46fd-8a20-31144e6cb956/","/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p5_4/70396634-b7ab-4d63-a37e-8c2af6219479/"]
-        print("The follwing files are selected")
+        # selected_paths=["/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p0_4/11e51352-2757-4efd-9c1d-bbe6112d0b03/","/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p5_1/43a5dd73-db37-46fd-8a20-31144e6cb956/","/dls/i23/data/2024/cm37273-1/processed/TestThermolysin/tlys_2/3p5_4/70396634-b7ab-4d63-a37e-8c2af6219479/"]
+        # print("The follwing files are selected")
         for path in selected_paths:
             print(path)
         print('\n')
@@ -337,8 +337,8 @@ def main (input_file=None):
             
             pattern = r'\d+p\d+_\d+'
             
-            dataset_ = re.findall(pattern, path)[0]
-            dataset_match = f"anacor_{dataset_}"
+            dataset_ =f"anacor_{re.findall(pattern, path)[0]}"
+            dataset_match = f"{dataset_}_save_data"
             # dataset_match= f"data_{i+1}"
             new_save_dir =os.path.dirname(save_dir)
             new_save_dir = os.path.join(new_save_dir,dataset_match)
@@ -347,6 +347,8 @@ def main (input_file=None):
             
             new_logger = setup_logger(os.path.join(new_save_dir, "Logging", 'preprocess.log'))
             new_refl_files, new_expt_files = find_reflexp(path)
+            if len(new_expt_files)==0 or len(new_refl_files) ==0:
+                raise RuntimeError(f"The reflection or experiment files are not found in {path}")
             assert len(new_refl_files) == 1, "Only one reflection file is allowed, but found {}".format(new_refl_files)
             assert len(new_expt_files) == 1, "Only one experiment file is allowed, but found {}".format(new_expt_files)
             new_refl_pth = os.path.join(new_save_dir, new_refl_files[0])
@@ -362,7 +364,7 @@ def main (input_file=None):
             mp_config = old_config.copy()
             mp_config[ 'refl_path' ] = new_refl_pth
             mp_config[ 'expt_path' ] = new_expt_pth
-            mp_config[ 'dataset' ] = dataset_match   
+            mp_config[ 'dataset' ] = dataset_   
             mp_config[ 'model_storepath' ] = model_storepath
         
             mp_config[ 'liac' ] =coe_list[0]

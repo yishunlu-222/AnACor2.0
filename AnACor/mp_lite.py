@@ -31,34 +31,6 @@ import requests
 import json
 
 
-
-
-# def preprocess_dial_lite ( args , save_dir ) :
-#     # from dials.util.filter_reflections import *
-#     import subprocess
-#     print('preprocessing dials data.....')
-#     with open( os.path.join( save_dir , "preprocess_script.sh" ) , "w" ) as f :
-#         f.write( "#!/bin/bash \n" )
-#         f.write( "{} \n".format( args.dials_dependancy ) )
-#         f.write( "expt_pth=\'{}\' \n".format( args.expt_path) )
-#         f.write( "refl_pth=\'{}\' \n".format( args.refl_path ) )
-#         f.write( "store_dir=\'{}\' \n".format( save_dir ) )
-#         f.write( "dataset={} \n".format( args.dataset ) )
-#         f.write( "full={} \n".format( args.full_reflection ) )
-#         f.write( "dials.python {}  --dataset ${{dataset}} " 
-#                  " --refl-filename ${{refl_pth}} " 
-#                  "--expt-filename ${{expt_pth}} --full ${{full}} "
-#                  "--save-dir ${{store_dir}}\n".format(os.path.join(os.path.dirname(os.path.abspath(__file__)),'lite/refl_2_json.py')) )
-
-#     subprocess.run( ["chmod" , "+x" , os.path.join( save_dir , "preprocess_script.sh" )] )
-#     try :
-#         result = subprocess.run( ["bash" , os.path.join( save_dir , "preprocess_script.sh" )] , check = True ,
-#                                  capture_output = True )
-#         print( result.stdout.decode( ) )
-
-#     except subprocess.CalledProcessError as e :
-#         print( "Error: " , e )
-
 def set_yaml ( input_file ) :
     parser = argparse.ArgumentParser( description = "analytical absorption correction data preprocessing" )
     with open( input_file , 'r' ) as f :
@@ -301,7 +273,7 @@ def main ( input_file=None) :
     if detect_file_type(expt_path) != "JSON" or detect_file_type(refl_path) != "JSON":
         
 
-        preprocess_dial_lite( args.refl_path ,args.expt_path  , save_dir,dataset,logger )
+        preprocess_dial_lite( args,refl_path ,expt_path, save_dir,args.dataset,logger ) 
         
         for file in os.listdir( save_dir ) :
             if '.json' in file :

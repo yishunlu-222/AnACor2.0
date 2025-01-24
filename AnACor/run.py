@@ -17,7 +17,7 @@ def main():
         print("Exiting. Please verify the paths.")
         return
 
-    pdb.set_trace()
+    # 
     for path in all_preprocessed_path:
         print(f"Processing: {path}")
 
@@ -29,6 +29,7 @@ def main():
                 # Step 3: Run mp_lite.main() for each path
                 mp_lite.main()
             except Exception as e:
+                
                 print(f"Error occurred while processing {path}: {e}")
             finally:
                 # Remove the path from sys.path after processing
