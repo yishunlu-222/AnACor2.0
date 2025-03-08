@@ -30,7 +30,8 @@ def main():
                 mp_lite.main()
             except Exception as e:
                 
-                print(f"Error occurred while processing {path}: {e}")
+                # print(f"Error occurred while processing {path}: {e}")
+                RuntimeError(f"Error occurred while processing {path}: {e}")
             finally:
                 # Remove the path from sys.path after processing
                 if path in sys.path:

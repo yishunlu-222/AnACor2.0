@@ -61,11 +61,20 @@ parser.add_argument(
 global args
 args = parser.parse_args()
 # pdb.set_trace()
+filename=args.refl_filename
+expt_filename=args.expt_filename
+
+expt = load.experiment_list(expt_filename, check_format=False)[0]
+axes =expt.goniometer.to_dict()
+beam=expt.beam.to_dict()
+
+expt_=os.path.basename( expt_filename)
+with open( os.path.join(args.save_dir, expt_ + args.dataset+"_"+str(args.full)+'.json'), "w") as fz:  # Pickling
+    json.dump([axes,beam], fz, indent=2)
 
 dictionary=[]
 
-filename=args.refl_filename
-expt_filename=args.expt_filename
+
 reflections= flex.reflection_table.from_file(filename)
 a_file = open( os.path.join(args.save_dir, os.path.basename(filename)
                             + args.dataset+"_"+str(args.full) +".json"),"w")
@@ -103,18 +112,10 @@ for i in range(len(reflections)):
         except:
             print(i)
             pass
-    #dictt['valid']=select[i]
+
     dictionary.append(dictt)
-#    if select[i] is False:
-#      print(i)
+
 
 json.dump(dictionary, a_file)
 a_file.close()
 
-expt = load.experiment_list(expt_filename, check_format=False)[0]
-axes =expt.goniometer.to_dict()
-beam=expt.beam.to_dict()
-
-expt_=os.path.basename( expt_filename)
-with open( os.path.join(args.save_dir, expt_ + args.dataset+"_"+str(args.full)+'.json'), "w") as fz:  # Pickling
-    json.dump([axes,beam], fz, indent=2)

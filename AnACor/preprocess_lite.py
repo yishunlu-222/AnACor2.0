@@ -282,6 +282,7 @@ def main (input_file=None):
         else:
             args.GUIselectFiles = False
         # pdb.set_trace()
+        coe_list=[0,0,0,0]
         try:
             coefficient_model = RunAbsorptionCoefficient( args.rawimg_path , model_storepath ,
                                                      coe_li= args.coe_li ,
@@ -308,15 +309,19 @@ def main (input_file=None):
         if hasattr(args, 'coe_li'):
             coe_list[0]=args.coe_li 
         else:
-            logger.error("The absorption coefficient for Liquor is not defined, Please define it  in the input yaml as something like coe_li: 0.01")
+            logger.error("The absorption coefficient for Liquor is not calculated (cal_coefficient: False), Please define it in the preprocess_input yaml as something like liac: 0.01, otherwise it was set as 0 by default")
+            # raise RuntimeError("The absorption coefficient for Liquor is not calculated (cal_coefficient: False), Please define it in the preprocess_input yaml as something like coe_li: 0.01")
         if hasattr(args, 'coe_lo'):
             coe_list[1]=args.coe_lo
         else:
-            logger.error("The absorption coefficient for Loop is not defined, Please define it  in the input yaml as something like coe_lo: 0.01")
+            logger.error("The absorption coefficient for Loop is not calculated (cal_coefficient: False), Please define it in the preprocess_input yaml as something like loac: 0.01, otherwise it was set as 0 by default")
+            # raise RuntimeError("The absorption coefficient for Loop is not calculated (cal_coefficient: False), Please define it in the preprocess_input yaml as something like coe_lo: 0.01")
         if hasattr(args, 'coe_cr'):
             coe_list[2]=args.coe_cr
         else:
-            logger.error("The absorption coefficient for Crystalline is not defined, Please define it  in the input yaml as something like coe_cr: 0.01")
+            logger.error("The absorption coefficient for Crystal is not calculated (cal_coefficient: False), Please define it in the preprocess_input yaml as something like crac: 0.01, otherwise it was set as 0 by default")
+            # raise RuntimeError("The absorption coefficient for Crystal is not calculated (cal_coefficient: False), Please define it in the preprocess_input yaml as something like coe_cr: 0.01")
+
         if hasattr(args, 'coe_bu'):
             coe_list[3]=args.coe_bu
         else:
@@ -336,8 +341,9 @@ def main (input_file=None):
         for i,path in enumerate(selected_paths):
             
             pattern = r'\d+p\d+_\d+'
-            
-            dataset_ =f"anacor_{re.findall(pattern, path)[0]}"
+             
+            # dataset_ =f"anacor_{re.findall(pattern, path)[0]}"
+            dataset_ = f"anacor_{i}"
             dataset_match = f"{dataset_}_save_data"
             # dataset_match= f"data_{i+1}"
             new_save_dir =os.path.dirname(save_dir)

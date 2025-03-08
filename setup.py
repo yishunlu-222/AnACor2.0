@@ -84,6 +84,7 @@ setup(
         'scipy',
         'pytest',
         'pytest-order',
+        'tkinterdnd2',
     ],
     tests_require=['pytest'],
 )
