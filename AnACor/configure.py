@@ -86,6 +86,7 @@ GPU_SM_MAPPING = {
     'rtx 4090': '89',
     'rtx 4080': '89',
     'rtx 6000 ada': '89',
+    'rtx 2000 ada': '89',
     'tesla l40': '89',
     'l40s ada': '89',
     'l4 ada': '89',
