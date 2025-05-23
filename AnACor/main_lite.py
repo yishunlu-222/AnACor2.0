@@ -42,6 +42,8 @@ def create_directory(directory_path):
 
 
 def main():
+    
+    global args
     try:
         configure()
         print("configuration is done")
@@ -51,7 +53,7 @@ def main():
         args.gpu=False
         args.openmp=True
         # raise RuntimeError("configuration is failed")
-    global args
+
     args = set_parser()
     print("\n==========\n")
     print("start AAC")
