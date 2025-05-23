@@ -45,8 +45,10 @@ def main():
     try:
         configure()
         print("configuration is done")
-    except:
-        pass
+    except Exception as e:
+        print("configuration is failed")
+        print(e)
+        raise RuntimeError("configuration is failed")
     global args
     args = set_parser()
     print("\n==========\n")
