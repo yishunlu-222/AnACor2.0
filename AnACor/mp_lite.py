@@ -73,7 +73,8 @@ def set_parser ( input_file=None) :
     return args
 
 def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,user, token,args):
-    slurm_api_url = "https://slurm-rest.diamond.ac.uk:8443/slurm/v0.0.38/job/submit"
+    slurm_api_url = "https://slurm-rest.diamond.ac.uk:8443/slurm/v0.0.42/job/submit"
+
     headers = {
         "X-SLURM-USER-NAME": user,
         "X-SLURM-USER-TOKEN": token,
