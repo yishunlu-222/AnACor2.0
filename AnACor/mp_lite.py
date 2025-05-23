@@ -100,7 +100,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                 "standard_error": stderr_log,
                 "environment": {
                 # "PATH": os.getenv("PATH"),
-                    "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/12.2.0/bin:/dls_sw/apps/mx/bin:/dls_sw/apps/xdsstat/2013-03-01:/dls_sw/apps/XDS/etc:/dls_sw/apps/XDS/20230630-extra:/dls_sw/apps/XDS/20230630:/dls_sw/apps/ccp4/8.0.019/arp_warp_8.0/bin/bin-x86_64-Linux:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/etc:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/bin:/dls_sw/apps/python/anaconda/4.6.14/64/envs/r-3.6/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/var/cfengine/bin:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu",
+                    "PATH": "/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/bin/linux64:/dls_sw/apps/GPhL/autoPROC/20240123/autoPROC/ruby/linux64/bin:/dls_sw/apps/gnuplot/4.6.3/bin:/dls_sw/apps/wxGTK/2.9.2.4/64/bin:/dls_sw/apps/adxv/1.9.13:/dls_sw/apps/dials/dials-v3-18-1/build/bin:/dls_sw/epics/R3.14.12.7/base/bin/linux-x86_64:/dls_sw/epics/R3.14.12.7/extensions/bin/linux-x86_64:/dls_sw/prod/tools/RHEL7-x86_64/defaults/bin:/dls_sw/apps/cuda/12.2.0/bin:/dls_sw/apps/mx/bin:/dls_sw/apps/xdsstat/2013-03-01:/dls_sw/apps/XDS/etc:/dls_sw/apps/XDS/20230630-extra:/dls_sw/apps/XDS/20230630:/dls_sw/apps/ccp4/8.0.019/arp_warp_8.0/bin/bin-x86_64-Linux:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/etc:/dls_sw/apps/ccp4/8.0.019/ccp4-8.0/bin:/dls_sw/apps/python/miniforge/4.10.0-0/bin:/usr/share/Modules/bin:/usr/local/bin:/usr/local/sbin:/usr/bin:/usr/sbin:/var/cfengine/bin:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu:/home/i23user/bin:/home/i23user/bin/XZuiichi:/home/i23user/bin/Sagasu:/home/i23user/bin/Sagasu",
         "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
                 }
             },
@@ -334,6 +334,7 @@ def main ( input_file=None) :
         f.write( "{}\n".format( args.dials_dependancy ) )
         # f.write( "source /dls/science/groups/i23/yishun/dials_yishun/dials \n" )
         # f.write("module load python/3.9 \n")
+        f.write("module load cuda \n")
         f.write( "num={}\n".format( args.num_cores ) )
         f.write( "sampling_method={}\n".format( args.sampling_method ) )
         f.write( "dataset={}\n".format( args.dataset ) )
