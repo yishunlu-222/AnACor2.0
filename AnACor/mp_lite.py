@@ -89,10 +89,9 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
     job_params = {
             "job": {
                 "name": f"AnACor_{dataset}",
-                "ntasks": 1,
                 "nodes": 1,
                 "cpus_per_task": num_cores,
-                "gres": "gpu:1",
+                "tres_per_node": "gres/gpu:1", 
                 "partition": "cs05r",  # Adjust this as needed
                 "current_working_directory": save_dir,
                 "standard_input": "/dev/null",
@@ -104,20 +103,27 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
         "LD_LIBRARY_PATH": "/lib/:/lib64/:/usr/local/lib"
                 }
             },
-            "script": 
-                    f"""#!/bin/bash\n 
-                   
-                    #module load gcc
-                    #module load cuda
-                    #export CUDA_HOME=/dls_sw/apps/cuda/12.4.0
-                    #export PATH=$CUDA_HOME/bin:$PATH
-                    #export PATH=/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
-                    nvidia-smi
-                    chmod 755 {job_script}\n  
-                    bash {job_script}""" # f"#!/bin/bash\n echo 'testing'"  cd {makefile}  make
-                    #                     cd {makefile} SM=70
-                    # make 
-                    # python {configure_pth}
+			"script": f"""#!/bin/bash -l
+
+			# Manually export all needed environment variables
+			export CUDA_HOME=/dls_sw/apps/cuda/12.2.0
+			export PATH=$CUDA_HOME/bin:/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
+			export PATH=/dls_sw/apps/python/miniforge/4.10.0-0/bin:$PATH
+			export LD_LIBRARY_PATH=/lib:/lib64:/usr/local/lib:$LD_LIBRARY_PATH
+
+			# Optional: source module environment if needed
+			source /etc/profile.d/modules.sh
+
+			# Check GPU status
+			module load cuda
+			echo "CUDA_VISIBLE_DEVICES=$CUDA_VISIBLE_DEVICES"
+
+			nvidia-smi
+
+			# Safely execute the job script
+			chmod +x {job_script} || true
+			bash {job_script}
+			"""
             
         }
 

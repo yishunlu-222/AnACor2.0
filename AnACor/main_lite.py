@@ -48,7 +48,9 @@ def main():
     except Exception as e:
         print("configuration is failed")
         print(e)
-        raise RuntimeError("configuration is failed")
+        args.gpu=False
+        args.openmp=True
+        # raise RuntimeError("configuration is failed")
     global args
     args = set_parser()
     print("\n==========\n")
