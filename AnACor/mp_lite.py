@@ -92,7 +92,7 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
                 "ntasks": 1,
                 "nodes": 1,
                 "cpus_per_task": num_cores,
-                "gres": "gpu:1:v100",
+                "gres": "gpu:1",
                 "partition": "cs05r",  # Adjust this as needed
                 "current_working_directory": save_dir,
                 "standard_input": "/dev/null",
@@ -106,13 +106,13 @@ def submit_job_slurm(hour, minute, second, num_cores, save_dir,logger,dataset,us
             },
             "script": 
                     f"""#!/bin/bash\n 
-                    #SBATCH --mem=50GB
+                   
                     #module load gcc
                     #module load cuda
-                    export CUDA_HOME=/dls_sw/apps/cuda/12.4.0
-                    export PATH=$CUDA_HOME/bin:$PATH
-                    export PATH=/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
-
+                    #export CUDA_HOME=/dls_sw/apps/cuda/12.4.0
+                    #export PATH=$CUDA_HOME/bin:$PATH
+                    #export PATH=/dls_sw/apps/gcc/11.2.0/7/bin:$PATH
+                    nvidia-smi
                     chmod 755 {job_script}\n  
                     bash {job_script}""" # f"#!/bin/bash\n echo 'testing'"  cd {makefile}  make
                     #                     cd {makefile} SM=70
@@ -334,6 +334,7 @@ def main ( input_file=None) :
         f.write( "{}\n".format( args.dials_dependancy ) )
         # f.write( "source /dls/science/groups/i23/yishun/dials_yishun/dials \n" )
         # f.write("module load python/3.9 \n")
+        f.write("module load gcc \n")
         f.write("module load cuda \n")
         f.write( "num={}\n".format( args.num_cores ) )
         f.write( "sampling_method={}\n".format( args.sampling_method ) )
