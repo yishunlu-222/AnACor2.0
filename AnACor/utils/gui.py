@@ -25,6 +25,10 @@ import tkinterdnd2
 def select_multiple_folders():
     root = tkinterdnd2.TkinterDnD.Tk()  # Enable Drag and Drop
     root.title("Select Multiple Folders")
+    root.minsize(800, 600)
+    root.resizable(True, True)
+    root.columnconfigure(0, weight=1)
+    root.rowconfigure(0, weight=1)
 
     folder_paths = []  # List to store selected folder paths
     current_directory = tk.StringVar()  # Store the currently opened directory
@@ -89,7 +93,14 @@ def select_multiple_folders():
 
     # Create a frame for the UI
     frame = ttk.Frame(root, padding="10")
-    frame.grid(row=0, column=0, sticky=(tk.W, tk.E, tk.N, tk.S))
+    frame.grid(row=0, column=0,  sticky="nsew")
+    for i in range(3):  # Assuming 3 columns
+        frame.columnconfigure(i, weight=1)
+
+    # Give more weight to rows with listboxes
+    frame.rowconfigure(2, weight=1)
+    frame.rowconfigure(5, weight=1)
+
 
     # Button to open parent directory
     browse_button = ttk.Button(frame, text="Browse Parent Folder", command=browse_directory)
@@ -100,7 +111,7 @@ def select_multiple_folders():
     label_available.grid(row=1, column=0, columnspan=3, sticky=tk.W)
 
     listbox = tk.Listbox(frame, height=10, width=50, selectmode=tk.MULTIPLE)  # Enable multiple selection
-    listbox.grid(row=2, column=0, columnspan=3, pady=5)
+    listbox.grid(row=2, column=0, columnspan=3, pady=5, sticky="nsew")
 
     # Button to add selected folders
     add_button = ttk.Button(frame, text="Add Selected", command=add_selected_folders)
@@ -111,7 +122,7 @@ def select_multiple_folders():
     label_selected.grid(row=4, column=0, columnspan=3, sticky=tk.W)
 
     selected_listbox = tk.Listbox(frame, height=10, width=50, selectmode=tk.MULTIPLE)
-    selected_listbox.grid(row=5, column=0, columnspan=3, pady=5)
+    selected_listbox.grid(row=5, column=0, columnspan=3, pady=5, sticky="nsew")
 
     # Button to delete selected folder paths
     delete_button = ttk.Button(frame, text="Delete Selected", command=delete_selected)

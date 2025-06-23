@@ -280,7 +280,7 @@ def main ( input_file=None) :
     if detect_file_type(expt_path) != "JSON" or detect_file_type(refl_path) != "JSON":
         
 
-        preprocess_dial_lite( args,refl_path ,expt_path, save_dir,args.dataset,logger ) 
+        preprocess_dial_lite( args,refl_path ,expt_path, save_dir,logger ) 
         
         for file in os.listdir( save_dir ) :
             if '.json' in file :

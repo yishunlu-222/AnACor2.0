@@ -28,12 +28,7 @@ parser.add_argument(
     default="./",
     help="save-dir for stacking",
 )
-parser.add_argument(
-    "--dataset",
-    type=str,
-    default=0,
-    help="the name of the dataset",
-)
+
 parser.add_argument(
     "--refl-filename",
     type=str,
@@ -68,17 +63,18 @@ expt_filename=args.expt_filename
 expt = load.experiment_list(expt_filename, check_format=False)[0]
 axes =expt.goniometer.to_dict()
 beam=expt.beam.to_dict()
-
+save_name=os.path.basename(os.path.dirname(expt_filename)) + "_" + os.path.splitext( os.path.basename(expt_filename))[0]
 expt_=os.path.basename( expt_filename)
-with open( os.path.join(args.save_dir, expt_ + args.dataset+"_"+str(args.full)+'.json'), "w") as fz:  # Pickling
+with open( os.path.join(args.save_dir, save_name + "_" + "expt" + "_"+str(args.full)+'.json'), "w") as fz:  # Pickling
     json.dump([axes,beam], fz, indent=2)
-
+print(f"{expt_filename} has been converted into {os.path.join(args.save_dir, save_name + "_" + "expt" + "_"+str(args.full)+'.json')}")
 dictionary=[]
 
-
+save_name=os.path.basename(os.path.dirname(filename)) + "_" + os.path.splitext( os.path.basename(filename))[0]
 reflections= flex.reflection_table.from_file(filename)
-a_file = open( os.path.join(args.save_dir, os.path.basename(filename)
-                            + args.dataset+"_"+str(args.full) +".json"),"w")
+a_file = open( os.path.join(args.save_dir, save_name + "_" + "refl" + "_"+str(args.full)+'.json'),"w")
+print(f"{filename} has been converted into {os.path.join(args.save_dir, save_name + "_" + "refl" + "_"+str(args.full)+'.json')}")
+
 print("len(reflections)")
 print(len(reflections))
 if args.full is True:

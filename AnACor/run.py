@@ -22,23 +22,24 @@ def main():
         print(f"Processing: {path}")
 
         # Step 2: Set the new sys.path to the subpath of all_preprocessed_path
-        if os.path.isdir(path):
-            sys.path.insert(0, path)  # Add the path to sys.path
-            os.chdir(path)  
-            try:
-                # Step 3: Run mp_lite.main() for each path
-                mp_lite.main()
-            except Exception as e:
-                
-                # print(f"Error occurred while processing {path}: {e}")
-                RuntimeError(f"Error occurred while processing {path}: {e}")
-            finally:
-                # Remove the path from sys.path after processing
-                if path in sys.path:
-                    sys.path.remove(path)
+        # if os.path.isdir(path):
+            # sys.path.insert(0, path)  # Add the path to sys.path
+            # os.chdir(path)  
+        # pdb.set_trace()
+        try:
+            # Step 3: Run mp_lite.main() for each path
+            mp_lite.main(input_file=path)
+        except Exception as e:
+            
+            # print(f"Error occurred while processing {path}: {e}")
+            RuntimeError(f"Error occurred while processing {path}: {e}")
+        finally:
+            # Remove the path from sys.path after processing
+            if path in sys.path:
+                sys.path.remove(path)
 
-        else:
-            print(f"Skipping {path} as it is not a valid directory.")
+        # else:
+        #     print(f"Skipping {path} as it is not a valid directory.")
 
 if __name__ == "__main__":
     main()

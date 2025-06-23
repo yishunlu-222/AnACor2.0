@@ -84,7 +84,7 @@ def set_parser ( ) :
 # else:
 #     print("arg a is not entered")
 
-def preprocess_dial_lite ( args,refl_path ,expt_path, save_dir,dataset,logger ) :
+def preprocess_dial_lite ( args,refl_path ,expt_path, save_dir,logger ) :
     # from dials.util.filter_reflections import *
     
     if os.path.isfile(expt_path) is False:
@@ -102,10 +102,9 @@ def preprocess_dial_lite ( args,refl_path ,expt_path, save_dir,dataset,logger ) 
         f.write( "expt_pth=\'{}\' \n".format( expt_path) )
         f.write( "refl_pth=\'{}\' \n".format( refl_path ) )
         f.write( "store_dir=\'{}\' \n".format( save_dir ) )
-        f.write( "dataset={} \n".format( dataset ) )
         f.write( "full={} \n".format( args.full_reflection ) )
         f.write( "{} \n".format( args.dials_dependancy ) )
-        f.write( "dials.python {}  --dataset ${{dataset}} " 
+        f.write( "dials.python {} " 
                  " --refl-filename ${{refl_pth}} " 
                  "--expt-filename ${{expt_pth}} --full ${{full}} "
                  "--save-dir ${{store_dir}}\n".format(os.path.join(os.path.dirname(os.path.abspath(__file__)),'utils/refl_2_json.py')) )
@@ -338,52 +337,90 @@ def main (input_file=None):
             print(path)
         print('\n')
         all_preprocessed_path=[]
+        counter=0
+        all_pairs=[]
         for i,path in enumerate(selected_paths):
-            
-            pattern = r'\d+p\d+_\d+'
-             
-            # dataset_ =f"anacor_{re.findall(pattern, path)[0]}"
-            dataset_ = f"anacor_{i}"
-            dataset_match = f"{dataset_}_save_data"
-            # dataset_match= f"data_{i+1}"
-            new_save_dir =os.path.dirname(save_dir)
-            new_save_dir = os.path.join(new_save_dir,dataset_match)
-            all_preprocessed_path.append(new_save_dir)
-            create_save_dir(new_save_dir)
-            
-            new_logger = setup_logger(os.path.join(new_save_dir, "Logging", 'preprocess.log'))
-            new_refl_files, new_expt_files = find_reflexp(path)
-            if len(new_expt_files)==0 or len(new_refl_files) ==0:
-                raise RuntimeError(f"The reflection or experiment files are not found in {path}")
-            assert len(new_refl_files) == 1, "Only one reflection file is allowed, but found {}".format(new_refl_files)
-            assert len(new_expt_files) == 1, "Only one experiment file is allowed, but found {}".format(new_expt_files)
-            new_refl_pth = os.path.join(new_save_dir, new_refl_files[0])
-            new_expt_pth = os.path.join(new_save_dir, new_expt_files[0])
-            new_logger.info(f"In path: {path}")
-            new_logger.info(f"Found Reflection files: {new_refl_pth}")
-            new_logger.info(f"Found Experiment files: {new_expt_pth}")            
-            preprocess_dial_lite(args, new_refl_pth ,new_expt_pth  , new_save_dir,dataset_match,new_logger )
-            new_yaml = os.path.join(new_save_dir, 'default_mpprocess_input.yaml')
+            refl_dict = {}
+            expt_dict = {}
+            matched_pairs = []
+            for filename in os.listdir(path):
+                if filename.endswith(".refl") and "scaled" not in filename:
+                    base = os.path.splitext(filename)[0]
+                    refl_dict[base] = os.path.join(path, filename)
+                elif filename.endswith(".expt") and "scaled" not in filename:
+                    base = os.path.splitext(filename)[0]
+                    expt_dict[base] = os.path.join(path, filename)
 
-            with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
-                    old_config = yaml.safe_load( f3 )
-            mp_config = old_config.copy()
-            mp_config[ 'refl_path' ] = new_refl_pth
-            mp_config[ 'expt_path' ] = new_expt_pth
-            mp_config[ 'dataset' ] = dataset_   
-            mp_config[ 'model_storepath' ] = model_storepath
+            # Find common keys in both refl and expt
+            for base_name in refl_dict.keys() & expt_dict.keys():
+                matched_pairs.append((refl_dict[base_name], expt_dict[base_name]))
+            all_pairs.append(matched_pairs)
+            for pairs in matched_pairs:
+                counter+=1
+                refl_path, expt_path = pairs
+                # pdb.set_trace()
+                logger.info(f"In path: {path}")
+                logger.info(f"Found Reflection files: {refl_path}")
+                logger.info(f"Found Experiment files: {expt_path}")          
+                save_name= os.path.basename(os.path.dirname(refl_path)) + "_" + os.path.splitext( os.path.basename(refl_path))[0]
+                preprocess_dial_lite(args, refl_path ,expt_path  , save_dir,logger )
+                new_yaml = os.path.join(save_dir, f'{save_name}.yaml')
+                dataset_match = f"anacor_data_{counter}"
+             
+                with open('./default_mpprocess_input.yaml', 'r' ) as f3 :
+                        old_config = yaml.safe_load( f3 )
+                mp_config = old_config.copy()
+                
+                mp_config[ 'refl_path' ] = os.path.join(save_dir, save_name + "_" + "refl"  "_"+"False"+'.json')
+                mp_config[ 'expt_path' ] = os.path.join(save_dir, save_name + "_" + "expt"  "_"+"False"+'.json')
+                mp_config[ 'store_dir' ] = save_dir   
+                mp_config[ 'dataset' ] = dataset_match   
+                mp_config[ 'model_storepath' ] = model_storepath
+
+                mp_config[ 'liac' ] =coe_list[0]
+                mp_config[ 'loac' ] =coe_list[1]
+                mp_config[ 'crac' ] =coe_list[2]
+                mp_config[ 'buac' ] =coe_list[3]
         
-            mp_config[ 'liac' ] =coe_list[0]
-            mp_config[ 'loac' ] =coe_list[1]
-            mp_config[ 'crac' ] =coe_list[2]
-            mp_config[ 'buac' ] =coe_list[3]
+        
+                with open( new_yaml , 'w' ) as file :
+                    yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
+                    print(f"input setting of {save_name} is finished")
+                all_preprocessed_path.append(new_yaml)
+            # dataset_ =f"anacor_{re.findall(pattern, path)[0]}"
+            # dataset_ = f"anacor_{i}"
+            # dataset_match = f"{dataset_}_save_data"
+            # dataset_match= f"data_{i+1}"
+            # new_save_dir =os.path.dirname(save_dir)
+            # new_save_dir = os.path.join(new_save_dir,dataset_match)
+            # all_preprocessed_path.append(new_save_dir)
+            # create_save_dir(new_save_dir)
+            
+            # new_logger = setup_logger(os.path.join(new_save_dir, "Logging", 'preprocess.log'))
+            # new_refl_files, new_expt_files = find_reflexp(path)
+            # if len(new_expt_files)==0 or len(new_refl_files) ==0:
+            #     raise RuntimeError(f"The reflection or experiment files are not found in {path}")
+            # assert len(new_refl_files) == 1, "Only one reflection file is allowed, but found {}".format(new_refl_files)
+            # assert len(new_expt_files) == 1, "Only one experiment file is allowed, but found {}".format(new_expt_files)
+            # new_refl_pth = os.path.join(new_save_dir, new_refl_files[0])
+            # new_expt_pth = os.path.join(new_save_dir, new_expt_files[0])
+            # new_logger.info(f"In path: {path}")
+            # new_logger.info(f"Found Reflection files: {new_refl_pth}")
+            # new_logger.info(f"Found Experiment files: {new_expt_pth}")            
+            # preprocess_dial_lite(args, new_refl_pth ,new_expt_pth  , new_save_dir,dataset_match,new_logger )
+            # new_yaml = os.path.join(new_save_dir, 'default_mpprocess_input.yaml')
+
+
+            # new_refl_files, new_expt_files = find_reflexp(path)
+            # if len(new_expt_files)==0 or len(new_refl_files) ==0:
+            #     raise RuntimeError(f"The reflection or experiment files are not found in {path}")
+            # assert len(new_refl_files) == 1, "Only one reflection file is allowed, but found {}".format(new_refl_files)
+            # assert len(new_expt_files) == 1, "Only one experiment file is allowed, but found {}".format(new_expt_files)
+            # new_refl_pth = os.path.join(save_dir, new_refl_files[0])
+            # new_expt_pth = os.path.join(save_dir, new_expt_files[0])
+
     
-     
-            with open( new_yaml , 'w' ) as file :
-                yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
-                print(f"input setting of {dataset_match} is finished")
-    
-        return selected_paths,all_preprocessed_path
+        return all_pairs,all_preprocessed_path
     else:
         preprocess_dial_lite(args, args.refl_path ,args.expt_path  , save_dir,dataset,logger )
 
