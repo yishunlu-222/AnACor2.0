@@ -130,7 +130,10 @@ def main():
             'dials_dependancy':'module load dials/latest' ,
             'full_reflection': False,
             'GUIselectFiles': False,
-            
+            'liac' : 0 ,
+            'loac' : 0 ,
+            'crac' : 0 ,
+            'buac' : 0 ,
 
         }
         # Dump the dictionary to a YAML string
@@ -150,6 +153,19 @@ def main():
                 lines.insert(i + 2, comment2.strip())
                 break  # Assuming only one match, we can break after inserting the comment
 
+        yaml_str_with_comment = '\n'.join(lines)            
+        
+        # Define the line where the comment should be added
+        comment_coe = "    # if cal_coefficient is false you need to set the true coefficients below  \n"
+        key_to_comment_coe = 'GUIselectFiles:'
+
+        # Insert the comment after the specified key
+        lines = yaml_str_with_comment.split('\n')
+        for i, line in enumerate(lines):
+            if line.startswith(key_to_comment_coe):
+                # Insert the comment after the current line
+                lines.insert(i + 1, comment_coe.strip())
+                break  # Assuming only one match, we can break after inserting the comment
         # Join the lines back together
         yaml_str_with_comment = '\n'.join(lines)
 

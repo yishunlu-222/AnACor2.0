@@ -81,7 +81,7 @@ def select_multiple_folders():
 
     # Function to return the selected paths when the user clicks "Finish"
     def on_finish():
-        root.destroy()  # Close the GUI window
+        root.quit()  # Close the GUI window
 
     # Drag-and-Drop event handler (for selected folders)
     def on_drop(event):
@@ -135,10 +135,11 @@ def select_multiple_folders():
     # Register the selected_listbox as a drop target for drag-and-drop
     selected_listbox.drop_target_register(tkinterdnd2.DND_FILES)
     selected_listbox.dnd_bind('<<Drop>>', on_drop)
-
+    root.protocol("WM_DELETE_WINDOW", on_finish)
     # Start the Tkinter event loop
     root.mainloop()
-
+    root.update_idletasks()
+    root.destroy() 
     # Return the folder paths after the GUI is closed
     return folder_paths
 

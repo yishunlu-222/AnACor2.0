@@ -341,7 +341,7 @@ def main ( input_file=None) :
         # f.write( "source /dls/science/groups/i23/yishun/dials_yishun/dials \n" )
         # f.write("module load python/3.9 \n")
         f.write("module load gcc \n")
-        f.write("module load cuda \n")
+        f.write("module load cuda/12.9.0 \n")
         f.write( "num={}\n".format( args.num_cores ) )
         f.write( "sampling_method={}\n".format( args.sampling_method ) )
         f.write( "dataset={}\n".format( args.dataset ) )

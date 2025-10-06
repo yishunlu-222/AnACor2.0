@@ -24,19 +24,25 @@ def set_parser_init():
         "--post",
         type=str2bool,
         default=False,
-        help="initialize the postprocessing configuation file", 
+        help="Initialize the configuration file for postprocessing", 
     )
     parser.add_argument(
         "--pre",
         type=str2bool,
         default=True, 
-        help="initialize the preprocessing configuation file",
+        help="Initialize the configuration file for preprocessing",
     )  
     parser.add_argument(
         "--mp",
         type=str2bool,
         default=True,
-        help="initialize the multiprocessing configuation file", 
+        help="Initialize the configuration file for multiprocessing", 
+    )
+    parser.add_argument(
+        "--run",
+        type=str2bool,
+        default=False,
+        help="Initialize the configuration file for overall running the process", 
     )
     args = parser.parse_args()
     return args

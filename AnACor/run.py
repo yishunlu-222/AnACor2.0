@@ -7,15 +7,15 @@ def main():
     # Step 0: Run preprocess_lite and get all preprocessed paths
     selected_paths,all_preprocessed_path = preprocess_lite.main()
 
-    # Let the user check if all_preprocessed_path is correct
-    print("Here are the preprocessed paths:")
-    for path in selected_paths:
-        print(path)
+    # # Let the user check if all_preprocessed_path is correct
+    # print("Here are the preprocessed paths:")
+    # for path in selected_paths:
+    #     print(path)
 
-    user_input = input("Are these paths correct? (y/n): ")
-    if user_input.lower() not in ['y', 'yes', 'ok', 'sure']:
-        print("Exiting. Please verify the paths.")
-        return
+    # user_input = input("Are these paths correct? (y/n): ")
+    # if user_input.lower() not in ['y', 'yes', 'ok', 'sure']:
+    #     print("Exiting. Please verify the paths.")
+    #     return
 
     # 
     for path in all_preprocessed_path:

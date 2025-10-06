@@ -355,6 +355,19 @@ def main (input_file=None):
             for base_name in refl_dict.keys() & expt_dict.keys():
                 matched_pairs.append((refl_dict[base_name], expt_dict[base_name]))
             all_pairs.append(matched_pairs)
+            
+        print("Here are the preprocessed paths:")
+        for path in all_pairs:
+            print(path)
+
+        user_input = input("Are these paths correct? (y/n): ")
+        if user_input.lower() not in ['y', 'yes', 'ok', 'sure']:
+            print("Exiting. Please verify the paths.")
+            logger.error("An error occurred while processing the selected paths.")
+            logger.error("Please check the paths and try again.")
+            raise RuntimeError("Error in processing the selected paths.")
+        
+        for matched_pairs in all_pairs:
             for pairs in matched_pairs:
                 counter+=1
                 refl_path, expt_path = pairs
