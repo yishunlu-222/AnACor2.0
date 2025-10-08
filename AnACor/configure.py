@@ -89,6 +89,7 @@ GPU_SM_MAPPING = {
     'rtx 2000 ada': '89',
     'tesla l40': '89',
     'l40s ada': '89',
+    'l40s': '89',
     'l4 ada': '89',
     # Hopper
     'h100': '90',

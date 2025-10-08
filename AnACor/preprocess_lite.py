@@ -355,9 +355,26 @@ def main (input_file=None):
             for base_name in refl_dict.keys() & expt_dict.keys():
                 matched_pairs.append((refl_dict[base_name], expt_dict[base_name]))
             all_pairs.append(matched_pairs)
-            
+        
+        def last_number_in_name(path: str) -> int:
+            name = os.path.basename(path)
+            nums = re.findall(r'\d+', name)
+            return int(nums[-1]) if nums else float('inf')
+
+        def first_path(x):
+            # peel off list/tuple layers until we hit a string path
+            while isinstance(x, (list, tuple)):
+                x = x[0]
+            return x  # should be a str path like "...SWEEP5.refl"
+
+        # pick the correct list to sort (handles nesting)
+        target_list = all_pairs[0] if all_pairs and isinstance(all_pairs[0], list) else all_pairs
+
+        # sort in place by last number of the first filename in each pair
+        target_list.sort(key=lambda item: last_number_in_name(first_path(item)))
+
         print("Here are the preprocessed paths:")
-        for path in all_pairs:
+        for path in target_list:
             print(path)
 
         user_input = input("Are these paths correct? (y/n): ")
@@ -367,8 +384,8 @@ def main (input_file=None):
             logger.error("Please check the paths and try again.")
             raise RuntimeError("Error in processing the selected paths.")
         
-        for matched_pairs in all_pairs:
-            for pairs in matched_pairs:
+        # for matched_pairs in target_list:
+        for pairs in target_list:
                 counter+=1
                 refl_path, expt_path = pairs
                 # pdb.set_trace()
@@ -386,16 +403,17 @@ def main (input_file=None):
                 
                 mp_config[ 'refl_path' ] = os.path.join(save_dir, save_name + "_" + "refl"  "_"+"False"+'.json')
                 mp_config[ 'expt_path' ] = os.path.join(save_dir, save_name + "_" + "expt"  "_"+"False"+'.json')
+                mp_config[ 'raw_refl_path' ]=refl_path
+                mp_config[ 'raw_expt_path' ]=expt_path
                 mp_config[ 'store_dir' ] = save_dir   
                 mp_config[ 'dataset' ] = dataset_match   
                 mp_config[ 'model_storepath' ] = model_storepath
 
-                mp_config[ 'liac' ] =coe_list[0]
-                mp_config[ 'loac' ] =coe_list[1]
-                mp_config[ 'crac' ] =coe_list[2]
-                mp_config[ 'buac' ] =coe_list[3]
-        
-        
+                mp_config[ 'liac' ] =float(coe_list[0])
+                mp_config[ 'loac' ] =float(coe_list[1])
+                mp_config[ 'crac' ] =float(coe_list[2])
+                mp_config[ 'buac' ] =float(coe_list[3])
+              
                 with open( new_yaml , 'w' ) as file :
                     yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)
                     print(f"input setting of {save_name} is finished")
@@ -433,7 +451,7 @@ def main (input_file=None):
             # new_expt_pth = os.path.join(save_dir, new_expt_files[0])
 
     
-        return all_pairs,all_preprocessed_path
+        return target_list,all_preprocessed_path
     else:
         preprocess_dial_lite(args, args.refl_path ,args.expt_path  , save_dir,dataset,logger )
 
@@ -456,10 +474,10 @@ def main (input_file=None):
         # mp_config[ 'refl_path' ] = refl_filename
         # mp_config[ 'expt_path' ] = expt_filename
 
-        mp_config[ 'liac' ] =coe_list[0]
-        mp_config[ 'loac' ] =coe_list[1]
-        mp_config[ 'crac' ] =coe_list[2]
-        mp_config[ 'buac' ] =coe_list[3]
+        mp_config[ 'liac' ] =float(coe_list[0])
+        mp_config[ 'loac' ] =float(coe_list[1])
+        mp_config[ 'crac' ] =float(coe_list[2])
+        mp_config[ 'buac' ] =float(coe_list[3])
         
         with open( 'default_mpprocess_input.yaml' , 'w' ) as file :
             yaml.dump( mp_config , file, default_flow_style=False, sort_keys=False, indent=4)

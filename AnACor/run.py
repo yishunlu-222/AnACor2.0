@@ -18,7 +18,7 @@ def main():
     #     return
 
     # 
-    for path in all_preprocessed_path:
+    for i,path in enumerate(all_preprocessed_path):
         print(f"Processing: {path}")
 
         # Step 2: Set the new sys.path to the subpath of all_preprocessed_path

@@ -387,7 +387,7 @@ def main ( input_file=None) :
         f.write( "echo \"${dataset} is finished\" \n" )
         f.write("echo 'It is ready for DIALS processing' \n")
         # f.write( "bash dialsprocess_script.sh \n" )
-    # f.close( )
+        # f.close( )
         
         if args.post_process is True:
             # with open( os.path.join( save_dir , "dialsprocess_script.sh" ) , "w" ) as f :
@@ -397,6 +397,12 @@ def main ( input_file=None) :
             result_path = os.path.join( save_dir , 'ResultData' , 'absorption_factors' )
             dials_dir = os.path.join( save_dir , 'ResultData' )
             dials_save_name = 'anacor_{}.refl'.format( dataset )
+            if args.raw_refl_path and args.raw_expt_path:
+                raw_refl_path = args.raw_refl_path
+                raw_expt_path = args.raw_expt_path
+            else:
+                raw_refl_path =args.refl_path
+                raw_expt_path =args.expt_path
             stackingpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils','stacking.py' )
             intoflexpy_pth = os.path.join( os.path.dirname( os.path.abspath( __file__ ) ) , 'utils', 'into_flex.py' )
             f.write( "source /etc/profile.d/modules.sh \n" )
@@ -410,7 +416,7 @@ def main ( input_file=None) :
                     "--full {3} --with-scaling {4} "
                     "--dataset {5} "
                     "--target-pth {6} --store-dir {7}  \n".format( intoflexpy_pth , args.dataset ,
-                                                                    args.refl_path , args.full_reflection ,
+                                                                    raw_refl_path , args.full_reflection ,
                                                                     args.with_scaling , dataset , dials_dir ,
                                                                     args.store_dir
                                                                     ) )
@@ -420,14 +426,14 @@ def main ( input_file=None) :
                     "anomalous={3}  physical.absorption_correction=False physical.analytical_correction=True "
                     "output.reflections=result_{2}_ac.refl  output.html=result_{2}_ac.html "
                     "output{{log={2}_ac_log.log}} output{{unmerged_mtz={2}_unmerged_ac.mtz}} output{{merged_mtz={2}_merged_ac.mtz}} "
-                    "\n".format( os.path.join( dials_dir , dials_save_name ) , args.expt_path , dataset,args.anomalous ) )
+                    "\n".format( os.path.join( dials_dir , dials_save_name ) ,raw_expt_path , dataset,args.anomalous ) )
             f.write( "\n" )
             f.write( "dials.scale  {0} {1}  "
                     "anomalous={3}  physical.absorption_level=high physical.analytical_correction=True "
                     "output.reflections=result_{2}_acsh.refl  output.html=result_{2}_acsh.html "
                     "output{{log={2}_acsh_log.log}}  output{{unmerged_mtz={2}_unmerged_acsh.mtz}} "
                     "output{{merged_mtz={2}_merged_acsh.mtz}} "
-                    "\n".format( os.path.join( dials_dir , dials_save_name ) , args.expt_path , dataset,args.anomalous ) )
+                    "\n".format( os.path.join( dials_dir , dials_save_name ) , raw_expt_path, dataset,args.anomalous ) )
             f.write( "{} \n".format( args.mtz2sca_dependancy ) )
             f.write( "mtz2sca {}_merged_acsh.mtz   \n".format( dataset ) )
             f.write( "mtz2sca {}_merged_ac.mtz   \n".format( dataset ) )
@@ -435,6 +441,7 @@ def main ( input_file=None) :
         # f.write("set +e \n")
         f.close( )
         """new slurm cluster command"""
+        
     os.chmod( os.path.join( save_dir , "mpprocess_script.sh" ), stat.S_IRWXU | stat.S_IRWXG | stat.S_IRWXO)
     try:
         user, token = get_slurm_token()
